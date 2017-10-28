@@ -5,9 +5,9 @@ const s3 = new AWS.S3({apiVersion: '2006-03-01'});
 const fs = require('fs');
 const tagReader = require('jsmediatags');
 
-//Strip out everything but AWS allowed characters and alphanumeric characters
+//Strip out everything but AWS permitted and alphanumeric characters
 const cleanTag = tag => {
-  return tag.replace(/[^a-zA-Z0-9+-=._:/\ ]/g, '');
+  return typeof tag !== 'undefined' ? tag.replace(/[^a-zA-Z0-9+-=._:/\ ]/g, '') : '';
 };
 
 exports.handler = (event, context, callback) => {
@@ -21,7 +21,7 @@ exports.handler = (event, context, callback) => {
     Bucket: event.Records[0].s3.bucket.name,
     Key: decodeURI(event.Records[0].s3.object.key).replace(/\+/g, ' ')
   };
-
+  
   s3.getObject(uploadedTrack, function(err, data) {
     if (err) {
       console.error(err.code, err.message);
@@ -47,7 +47,7 @@ exports.handler = (event, context, callback) => {
           fileTags.push({Key: 'album', Value: cleanTag(tags.tags.album)});
           fileTags.push({Key: 'artist', Value: cleanTag(tags.tags.artist)});
           fileTags.push({Key: 'year', Value: cleanTag(tags.tags.year)});
-          
+
           s3.putObjectTagging(uploadedTrack, function(err, data) {
             if (err) {
               console.error(err.code, err.message);
