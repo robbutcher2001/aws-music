@@ -53,15 +53,15 @@ Resources:
         Fn::Join: [ '-', [ 'music-archive-file-library', !Ref Env ] ]
       NotificationConfiguration:
         LambdaConfigurations:
-          - Function: !Ref TagReaderFunction
-            Event: 's3:ObjectCreated:*'
-            Filter:
-              S3Key:
-                Rules:
-                  - Name: suffix
-                    Value: mp3
-                  - Name: suffix
-                    Value: m4a
+        - Function: !Ref TagReaderFunction
+          Event: 's3:ObjectCreated:*'
+          Filter:
+            S3Key:
+              Rules:
+              - Name: suffix
+                Value: mp3
+              - Name: suffix
+                Value: m4a
   #CloudFront distro to sit in front of bucket and reduce outbound cost
   MusicArchiveDistribution:
     Type: AWS::CloudFront::Distribution
