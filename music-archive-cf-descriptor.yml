@@ -53,22 +53,22 @@ Resources:
       AccessControl: Private
       BucketName:
         Fn::Join: [ '-', [ 'music-archive-file-library', !Ref Env ] ]
-      NotificationConfiguration:
-        LambdaConfigurations:
-          - Function: !GetAtt TagReaderFunction.Arn
-            Event: 's3:ObjectCreated:*'
-            Filter:
-              S3Key:
-                Rules:
-                  - Name: suffix
-                    Value: mp3
-          - Function: !GetAtt TagReaderFunction.Arn
-            Event: 's3:ObjectCreated:*'
-            Filter:
-              S3Key:
-                Rules:
-                  - Name: suffix
-                    Value: m4a
+      # NotificationConfiguration:
+      #   LambdaConfigurations:
+      #     - Function: !GetAtt TagReaderFunction.Arn
+      #       Event: 's3:ObjectCreated:*'
+      #       Filter:
+      #         S3Key:
+      #           Rules:
+      #             - Name: suffix
+      #               Value: mp3
+      #     - Function: !GetAtt TagReaderFunction.Arn
+      #       Event: 's3:ObjectCreated:*'
+      #       Filter:
+      #         S3Key:
+      #           Rules:
+      #             - Name: suffix
+      #               Value: m4a
   #CloudFront distro to sit in front of bucket and reduce outbound cost
   MusicArchiveDistribution:
     Type: AWS::CloudFront::Distribution
