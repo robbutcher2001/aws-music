@@ -148,3 +148,15 @@ Resources:
         Fn::GetAtt:
           - TagReaderRole
           - Arn
+  TagReaderLambdaPermission:
+    DependsOn: TagReaderFunction
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      FunctionName:
+        Fn::GetAtt:
+          - TagReaderFunction
+          - Arn
+      SourceArn:
+        Fn::Join: [ '', [ 'arn:aws:s3:eu-west-1:', !Ref 'AWS::AccountId', ':*' ] ]
