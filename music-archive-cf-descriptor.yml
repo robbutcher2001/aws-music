@@ -138,6 +138,7 @@ Resources:
         - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
   #Lambda Function Definitions
   TagReaderFunction:
+    DependsOn: TagReaderRole
     Type: AWS::Lambda::Function
     Properties:
       Handler: lambda/tag-reader.handler
@@ -160,4 +161,4 @@ Resources:
           - TagReaderFunction
           - Arn
       SourceArn:
-        Fn::Join: [ '', [ 'arn:aws:s3:::', 'music-archive-file-librar-', !Ref Env ] ]
+        Fn::Join: [ '', [ 'arn:aws:s3:::', 'music-archive-file-library-', !Ref Env ] ]
