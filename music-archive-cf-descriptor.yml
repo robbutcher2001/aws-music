@@ -44,6 +44,23 @@ Resources:
             Action:
               - 's3:ListBucket'
             Resource: !GetAtt MusicArchiveFeDistributionBucket.Arn
+  MusicArchiveFileLibraryBucket:
+  Type: AWS::S3::Bucket
+  Properties:
+    AccessControl: Private
+    BucketName:
+      Fn::Join: [ '-', [ 'music-archive-file-library', !Ref Env ] ]
+    NotificationConfiguration:
+      LambdaConfigurations:
+        - Function: !Ref TagReaderFunction
+          Event: 's3:ObjectCreated:*'
+          Filter:
+            S3Key:
+              Rules:
+                - Name: suffix
+                  Value: mp3
+                - Name: suffix
+                  Value: m4a
   #CloudFront distro to sit in front of bucket and reduce outbound cost
   MusicArchiveDistribution:
     Type: AWS::CloudFront::Distribution
@@ -81,6 +98,7 @@ Resources:
               Forward: all
           # ViewerProtocolPolicy: redirect-to-https
           ViewerProtocolPolicy: allow-all
+  #DNS Record Set
   MusicArchiveDistributionDNSRecord:
     Type: AWS::Route53::RecordSet
     Properties:
@@ -91,3 +109,35 @@ Resources:
         DNSName: !GetAtt MusicArchiveDistribution.DomainName
         EvaluateTargetHealth: false
         HostedZoneId: Z2FDTNDATAQYW2
+  #Lambda Role Definitions
+  TagReaderRole:
+  Type: AWS::IAM::Role
+  Properties:
+    RoleName:
+      Fn::Join: [ '-', [ 'tag-reader-role', !Ref Env ] ]
+    AssumeRolePolicyDocument:
+      Version: '2012-10-17'
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+              - 'lambda.amazonaws.com'
+          Action:
+            - 'sts:AssumeRole'
+    Path: /
+    ManagedPolicyArns:
+      - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+  #Lambda Function Definitions
+  TagReaderFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: lambda/tag-reader.handler
+      Runtime: nodejs6.10
+      Code:
+        S3Bucket: 'music-archive-source-code'
+        S3Key: %{SourceCodeBucket}
+      Role:
+        Fn::GetAtt:
+          - TagReaderRole
+          - Arn

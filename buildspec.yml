@@ -2,6 +2,13 @@ version: 0.2
 phases:
   install:
     commands:
+      - timestamp="`date +%s%N`"
+      - cd lambda
+      - npm install
+      - cd ..
+      - zip -r lambda-source-${timestamp} lambda/*
+      - aws s3 cp lambda-source-${timestamp}.zip s3://${SourceCodeBucket}
+      - sed -ie "s/%{SourceCodeBucket}/lambda-source-${timestamp}.zip/g" music-archive-cf-descriptor.yml
       - aws s3 cp music-archive-cf-descriptor.yml s3://${SourceCodeBucket}
 artifacts:
   files:
