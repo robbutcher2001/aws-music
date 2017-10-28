@@ -47,6 +47,7 @@ Resources:
   #S3 Music File Bucket
   MusicArchiveFileLibraryBucket:
     DependsOn: TagReaderFunction
+    DependsOn: TagReaderLambdaPermission
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: Private
