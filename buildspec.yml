@@ -1,0 +1,9 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - aws s3 cp music-archive-cf-descriptor.yml s3://${LambdaSourceBucket}
+artifacts:
+  files:
+    - pipeline-params/**/*
+    - music-archive-cf-descriptor.yml
