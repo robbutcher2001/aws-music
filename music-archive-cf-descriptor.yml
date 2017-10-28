@@ -150,6 +150,7 @@ Resources:
         Fn::GetAtt:
           - TagReaderRole
           - Arn
+      Timeout: 30
   TagReaderLambdaPermission:
     DependsOn: TagReaderFunction
     Type: AWS::Lambda::Permission
