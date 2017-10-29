@@ -136,6 +136,24 @@ Resources:
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
         - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+  DBModelBuilderRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Join: [ '-', [ 'db-model-builder-role', !Ref Env ] ]
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - 'arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess'
   #Lambda Function Definitions
   TagReaderFunction:
     DependsOn: TagReaderRole
@@ -163,3 +181,16 @@ Resources:
           - Arn
       SourceArn:
         Fn::Join: [ '', [ 'arn:aws:s3:::', 'music-archive-file-library-', !Ref Env ] ]
+  DBModelBuilderFunction:
+    DependsOn: DBModelBuilderRole
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: lambda/db-model-builder.handler
+      Runtime: nodejs6.10
+      Code:
+        S3Bucket: 'music-archive-source-code'
+        S3Key: %{SourceCodeBucket}
+      Role:
+        Fn::GetAtt:
+          - DBModelBuilderRole
+          - Arn
