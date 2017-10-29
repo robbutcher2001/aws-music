@@ -19,9 +19,9 @@ exports.handler = (event, context, callback) => {
 
   const uploadedTrack = { 
     Bucket: event.Records[0].s3.bucket.name,
-    Key: decodeURI(event.Records[0].s3.object.key).replace(/\+/g, ' ')
+    Key: decodeURIComponent(event.Records[0].s3.object.key).replace(/\+/g, ' ')
   };
-  
+
   s3.getObject(uploadedTrack, function(err, data) {
     if (err) {
       console.error(err.code, err.message);
