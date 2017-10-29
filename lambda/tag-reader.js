@@ -13,8 +13,8 @@ const cleanTag = tag => {
 exports.handler = (event, context, callback) => {
 
   if (event.Records.length > 1) {
-    console.error(`Too many records in event [${event.Records.length}]`);
-    return callback(`Too many records in event [${event.Records.length}]`);
+    console.error(`Too many records in event [${event.Records.length}], can only process 1`);
+    return callback(`Too many records in event [${event.Records.length}], can only process 1`);
   }
 
   const uploadedTrack = { 
