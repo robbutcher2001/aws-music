@@ -82,10 +82,8 @@ Resources:
         DefaultRootObject: index.html
         HttpVersion: http2
         ViewerCertificate:
-          # AcmCertificateArn: !Ref DNSCertARN
-          # Remove CloudFrontDefaultCertificate when DNSCert is usable
-          CloudFrontDefaultCertificate: true
-          # SslSupportMethod: sni-only
+          AcmCertificateArn: !Ref DNSCertARN
+          SslSupportMethod: sni-only
         Origins:
         - DomainName: !GetAtt MusicArchiveFeDistributionBucket.DomainName
           Id:
@@ -104,8 +102,7 @@ Resources:
             QueryString: true
             Cookies:
               Forward: all
-          # ViewerProtocolPolicy: redirect-to-https
-          ViewerProtocolPolicy: allow-all
+          ViewerProtocolPolicy: redirect-to-https
   #DNS Record Set
   MusicArchiveDistributionDNSRecord:
     Type: AWS::Route53::RecordSet
