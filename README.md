@@ -1,2 +1,3 @@
 # aws-music
-Access old music archives over the web
+
+Stream old music archives from AWS S3 over the web
