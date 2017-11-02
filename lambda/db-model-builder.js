@@ -35,24 +35,28 @@ const searchObject = (obj, term) => {
 };
 
 const getLibraryArtist = (library, artist) => {
+  var found;
   library.forEach(item => {
     if (item.artist === artist) {
-      return item;
+      found = item;
+    }
+  });
+
+  return found;
+};
+
+const getLibraryAlbum = (library, artist, album) => {
+  library.forEach(item => {
+    if (item.artist === artist) {
+      item.albums.forEach(album => {
+        if (album.name === album) {
+          return item;
+        }
+      });
     }
   });
 
   return null;
-};
-
-const searchLibraryAlbums = (library, album) => {
-  var found = false;
-  library.forEach(item => {
-    item.albums.forEach(album => {
-      found = (found || album.name === album) ? true : false;
-    });
-  });
-
-  return found;
 };
 
 const buildLibrary = tracks => {
@@ -60,7 +64,8 @@ const buildLibrary = tracks => {
 
   // Build artists
   tracks.forEach(track => {
-    if (getLibraryArtist(library, track.artist) === null) {
+    const item = getLibraryArtist(library, track.artist);
+    if (typeof item === 'undefined') {
       library.push({artist: track.artist});
     }
     else {
@@ -70,15 +75,12 @@ const buildLibrary = tracks => {
 
   // // Build albums
   // tracks.forEach(track => {
-  //   if (searchLibraryAlbums(library, track.album)) {
-  //     console.log(`${track.album} already in library`);
+  //   const item = getLibraryAlbum(library, track.artist, track.album);
+  //   if (item === null) {
+  //     console.log(`TODO`);
   //   }
   //   else {
-  //     const item = {
-  //       artist: track.artist,
-  //       more: 'something'
-  //     };
-  //     library.push(item);
+  //     const album = item.album[track.album];
   //   }
   // });
 
