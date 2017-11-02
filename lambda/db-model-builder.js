@@ -49,8 +49,8 @@ const getLibraryAlbum = (library, artist, album) => {
   var found;
   library.forEach(item => {
     if (item.artist === artist) {
-      item.albums.forEach(album => {
-        if (album.name === album) {
+      item.albums.forEach(existingAlbum => {
+        if (existingAlbum.name === album) {
           found = item;
         }
       });
@@ -97,6 +97,21 @@ const buildLibrary = tracks => {
     }
   });
 
+  // Add tracks
+  // Build albums
+  tracks.forEach(track => {
+    const item = getLibraryAlbum(library, track.artist, track.album);
+    if (typeof item !== 'undefined') {
+      item.albums[track.album].tracks.push({
+        title: track.title,
+        year: track.year
+      });
+    }
+    else {
+      console.log(`${track.title} doesn't have a place to go in library`);
+    }
+  });
+
   return library;
 };
 
@@ -111,7 +126,7 @@ exports.handler = (event, context, callback) => {
 
       Promise.all(trackResponses)
         .then(tracks => {
-          console.log(buildLibrary(tracks));
+          console.log(JSON.stringify(buildLibrary(tracks)));
           callback(null, JSON.stringify(tracks));
         })
         .catch(err => {
