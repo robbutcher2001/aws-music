@@ -4,23 +4,25 @@ const AWS = require('aws-sdk');
 const s3 = new AWS.S3({apiVersion: '2006-03-01'});
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
-const getTrackKeys = (trackKeyParams) =>
+const trackBucket = process.env.TRACK_BUCKET;
+
+const getTrackKeys = trackKeyParams =>
   new Promise((resolve, reject) => {
     const trackKeys = [];
 
-    s3.listObjectsV2(trackKeyParams, function(err, tracks) {
+    s3.listObjectsV2(trackKeyParams, function(err, returnedTracks) {
       if (err) {
         reject(err);
       }
       else {
-        tracks.Contents.forEach(track => {
+        returnedTracks.Contents.forEach(returnedTrack => {
           trackKeys.push({
-            key: track.Key
+            key: returnedTrack.Key
           });
         });
 
-        if (tracks.IsTruncated) {
-            trackKeyParams.ContinuationToken = tracks.NextContinuationToken;
+        if (returnedTracks.IsTruncated) {
+            trackKeyParams.ContinuationToken = returnedTracks.NextContinuationToken;
             getTrackKeys(trackKeyParams)
               .then(nextKeys => {
                 resolve(nextKeys);
@@ -36,11 +38,11 @@ const getTrackKeys = (trackKeyParams) =>
     });
   });
 
-const getTrackTags = track => {
+const getTrackTags = track =>
   new Promise((resolve, reject) => {
     const taggingParams = {
-      Bucket: process.env.TRACK_BUCKET,
-      Key: track
+      Bucket: trackBucket,
+      Key: track.key
     };
     s3.getObjectTagging(taggingParams, function(err, trackTags) {
       if (err) {
@@ -54,17 +56,21 @@ const getTrackTags = track => {
   });
 
 exports.handler = (event, context, callback) => {
-  const trackKeyParams = {
-    Bucket: process.env.TRACK_BUCKET
-  };
-
-  getTrackKeys(trackKeyParams)
+  getTrackKeys({Bucket: trackBucket})
     .then(trackKeys => {
-      console.log(JSON.stringify(trackKeys));
-      // getTrackTags(trackKeys[0])
-      //   .then(trackTags) => {
-      //     console.log(trackTags);
-      //   });
+
+      const trackTagResponses = [];
+      trackKeys.forEach(trackKey => {
+        trackTagResponses.push(getTrackTags(trackKey));
+      });
+
+      Promise.all(trackTagResponses)
+        .then(trackTags => {
+          callback(null, JSON.stringify(trackTags));
+        })
+        .catch(err => {
+          callback(`Could not extract tags from all tracks: ${err}`);
+        });
     })
     .catch(err => {
         callback(`Could not get track keys from S3: ${err}`)
