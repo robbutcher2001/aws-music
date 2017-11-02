@@ -192,6 +192,7 @@ Resources:
         Fn::GetAtt:
           - DBModelBuilderRole
           - Arn
+      Timeout: 120
       Environment:
         Variables:
           TRACK_BUCKET: !Ref MusicArchiveFileLibraryBucket
