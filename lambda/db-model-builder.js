@@ -28,6 +28,19 @@ const createTrack = trackKey =>
       });
   });
 
+const buildLibrary = tracks => {
+  const library = [];
+
+  tracks.forEach(track => {
+    const item = {
+      artist: track.artist
+    };
+    library.push(item);
+  });
+
+  return library;
+};
+
 exports.handler = (event, context, callback) => {
   getS3Keys({Bucket: trackBucket})
     .then(trackKeys => {
@@ -39,6 +52,7 @@ exports.handler = (event, context, callback) => {
 
       Promise.all(trackResponses)
         .then(tracks => {
+          console.log(buildLibrary(track));
           callback(null, JSON.stringify(tracks));
         })
         .catch(err => {
