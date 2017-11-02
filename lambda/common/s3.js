@@ -38,21 +38,14 @@ const getS3Keys = keyParams =>
     });
   });
 
-const getS3ObjectTags = s3Object =>
+const getS3ObjectTags = tagParams =>
   new Promise((resolve, reject) => {
-    const taggingParams = {
-      Bucket: trackBucket,
-      Key: s3Object.key
-    };
-    s3.getObjectTagging(taggingParams, function(err, trackTags) {
+    s3.getObjectTagging(tagParams, function(err, trackTags) {
       if (err) {
         reject(err);
       }
       else {
-        trackTags.TagSet.forEach(trackTag => {
-          s3Object[`${trackTag.Key}`] = trackTag.Value;
-        });
-        resolve(s3Object);
+        resolve(trackTags);
       }
     });
   });
