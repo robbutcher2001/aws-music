@@ -34,10 +34,22 @@ const searchObject = (obj, term) => {
   return found;
 };
 
-const searchLibraryArtist = (library, artist) => {
+const getLibraryArtist = (library, artist) => {
+  library.forEach(item => {
+    if (item.artist === artist) {
+      return item;
+    }
+  });
+
+  return null;
+};
+
+const searchLibraryAlbums = (library, album) => {
   var found = false;
   library.forEach(item => {
-    found = (found || item.artist === artist) ? true : false;
+    item.albums.forEach(album => {
+      found = (found || album.name === album) ? true : false;
+    });
   });
 
   return found;
@@ -46,19 +58,33 @@ const searchLibraryArtist = (library, artist) => {
 const buildLibrary = tracks => {
   const library = [];
 
+  // Build artists
   tracks.forEach(track => {
-
-    if (searchLibraryArtist(library, track.artist)) {
-      console.log(`${track.artist} already in library`);
-    }
-    else {
+    if (searchLibraryArtists(library, track.artist)) {
       const item = {
         artist: track.artist,
         more: 'something'
       };
       library.push(item);
     }
+    else {
+      console.log(`${track.artist} already in library`);
+    }
   });
+
+  // // Build albums
+  // tracks.forEach(track => {
+  //   if (searchLibraryAlbums(library, track.album)) {
+  //     console.log(`${track.album} already in library`);
+  //   }
+  //   else {
+  //     const item = {
+  //       artist: track.artist,
+  //       more: 'something'
+  //     };
+  //     library.push(item);
+  //   }
+  // });
 
   return library;
 };
