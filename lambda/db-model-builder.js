@@ -26,14 +26,15 @@ const getTrackKeys = trackKeyParams =>
             getTrackKeys(trackKeyParams)
               .then(nextKeys => {
                 resolve(nextKeys);
+                return;
               })
               .catch(err => {
-                reject(err)
+                reject(err);
+                return;
               });
         }
-        else {
-            resolve(trackKeys);
-        }
+
+        resolve(trackKeys);
       }
     });
   });
@@ -49,7 +50,9 @@ const getTrackTags = track =>
         reject(err);
       }
       else {
-        track.trackTags = trackTags;
+        trackTags.TagSet.forEach(trackTag => {
+          track[`${trackTag.Key}`] = trackTag.Value;
+        });
         resolve(track);
       }
     });
