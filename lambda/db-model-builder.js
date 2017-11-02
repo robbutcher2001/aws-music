@@ -4,39 +4,9 @@ const AWS = require('aws-sdk');
 const s3 = new AWS.S3({apiVersion: '2006-03-01'});
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
+const { getS3Keys } = require('./common');
+
 const trackBucket = process.env.TRACK_BUCKET;
-
-const getTrackKeys = trackKeyParams =>
-  new Promise((resolve, reject) => {
-    const trackKeys = [];
-
-    s3.listObjectsV2(trackKeyParams, function(err, returnedTracks) {
-      if (err) {
-        reject(err);
-      }
-      else {
-        returnedTracks.Contents.forEach(returnedTrack => {
-          trackKeys.push({
-            key: returnedTrack.Key
-          });
-        });
-
-        if (returnedTracks.IsTruncated) {
-            trackKeyParams.ContinuationToken = returnedTracks.NextContinuationToken;
-            getTrackKeys(trackKeyParams)
-              .then(moreKeys => {
-                resolve(trackKeys.concat(moreKeys));
-              })
-              .catch(err => {
-                reject(err);
-              });
-        }
-        else {
-          resolve(trackKeys);
-        }
-      }
-    });
-  });
 
 const getTrackTags = trackKey =>
   new Promise((resolve, reject) => {
@@ -58,7 +28,7 @@ const getTrackTags = trackKey =>
   });
 
 exports.handler = (event, context, callback) => {
-  getTrackKeys({Bucket: trackBucket})
+  getS3Keys({Bucket: trackBucket})
     .then(trackKeys => {
 
       const trackTagResponses = [];
