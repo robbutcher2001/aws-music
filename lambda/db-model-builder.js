@@ -4,50 +4,71 @@ const AWS = require('aws-sdk');
 const s3 = new AWS.S3({apiVersion: '2006-03-01'});
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
-const trackKeyParams = {
-  Bucket: process.env.TRACK_BUCKET
-};
-
-//TODO: recurse if data.IsTruncated === true
-const getTrackKeys = () =>
+const getTrackKeys = (trackKeyParams) =>
   new Promise((resolve, reject) => {
     const trackKeys = [];
 
-    s3.listObjectsV2(trackKeyParams, function(err, data) {
+    s3.listObjectsV2(trackKeyParams, function(err, tracks) {
       if (err) {
         reject(err);
       }
       else {
-        data.Contents.forEach(track => {
-          trackKeys.push(track.Key);
+        tracks.Contents.forEach(track => {
+          trackKeys.push({
+            key: track.Key
+          });
         });
 
-        resolve(trackKeys);
+        if (tracks.IsTruncated) {
+            trackKeyParams.ContinuationToken = tracks.NextContinuationToken;
+            getTrackKeys(trackKeyParams)
+              .then(nextKeys => {
+                resolve(nextKeys);
+              })
+              .catch(err => {
+                reject(err)
+              });
+        }
+        else {
+            resolve(trackKeys);
+        }
       }
     });
   });
 
-const getTrackTags = trackKeys => {
-  trackKeys.forEach(trackKey => {
-    console.log(trackKey);
+const getTrackTags = track => {
+  new Promise((resolve, reject) => {
+    const taggingParams = {
+      Bucket: process.env.TRACK_BUCKET,
+      Key: track
+    };
+    s3.getObjectTagging(taggingParams, function(err, trackTags) {
+      if (err) {
+        reject(err);
+      }
+      else {
+        track.trackTags = trackTags;
+        resolve(track);
+      }
+    });
   });
 
-  // const headObjectParams = {
-  //   Bucket: process.env.TRACK_BUCKET,
-  //   Key: data.Contents[0].Key
-  // };
-  // s3.getObjectTagging(headObjectParams, function(err, data) {
-  //   if (err) console.log(err, err.stack); // an error occurred
-  //   else     console.log(data);           // successful response
-  // });
-};
-
 exports.handler = (event, context, callback) => {
-  getTrackKeys()
+  const trackKeyParams = {
+    Bucket: process.env.TRACK_BUCKET
+  };
+
+  getTrackKeys(trackKeyParams)
     .then(trackKeys => {
       console.log(JSON.stringify(trackKeys));
+      // getTrackTags(trackKeys[0])
+      //   .then(trackTags) => {
+      //     console.log(trackTags);
+      //   });
     })
-    .catch(callback());
+    .catch(err => {
+        callback(`Could not get track keys from S3: ${err}`)
+    });
   // const params = {
   //   TableName : 'Artists',
   //   Item: {
