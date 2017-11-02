@@ -65,16 +65,18 @@ const buildLibrary = tracks => {
 
   // Build artists
   tracks.forEach(track => {
-    const item = getLibraryArtist(library, track.artist);
-    if (typeof item === 'undefined') {
-      const item = {
-        artist: track.artist,
-        albums: []
-      };
-      library.push({artist: track.artist});
-    }
-    else {
-      console.log(`${track.artist} already in library`);
+    if (typeof track.artist !== 'undefined') {
+      const item = getLibraryArtist(library, track.artist);
+      if (typeof item === 'undefined') {
+        const item = {
+          artist: track.artist,
+          albums: []
+        };
+        library.push(item);
+      }
+      else {
+        console.log(`${track.artist} already in library`);
+      }
     }
   });
 
