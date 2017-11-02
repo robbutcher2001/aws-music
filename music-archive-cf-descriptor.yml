@@ -192,3 +192,6 @@ Resources:
         Fn::GetAtt:
           - DBModelBuilderRole
           - Arn
+      Environment:
+        Variables:
+          TRACK_BUCKET: !Ref MusicArchiveFileLibraryBucket
