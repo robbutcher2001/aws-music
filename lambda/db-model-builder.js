@@ -28,6 +28,15 @@ const createTrack = trackKey =>
       });
   });
 
+const searchObject = (obj, term) => {
+  var found = false;
+  Object.keys(obj).forEach(key => {
+    found = (found || term in obj[key]) ? true : false;
+  });
+
+  return found;
+};
+
 const buildLibrary = tracks => {
   const library = [];
 
@@ -36,6 +45,8 @@ const buildLibrary = tracks => {
       artist: track.artist
     };
     library.push(item);
+
+    console.log(`Is term ${track.artist} in ${item}? ${searchObject(item, track.artist)}`);
   });
 
   return library;
@@ -52,7 +63,7 @@ exports.handler = (event, context, callback) => {
 
       Promise.all(trackResponses)
         .then(tracks => {
-          console.log(buildLibrary(track));
+          console.log(buildLibrary(tracks));
           callback(null, JSON.stringify(tracks));
         })
         .catch(err => {
