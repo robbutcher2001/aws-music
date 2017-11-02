@@ -46,17 +46,18 @@ const getLibraryArtist = (library, artist) => {
 };
 
 const getLibraryAlbum = (library, artist, album) => {
+  var found;
   library.forEach(item => {
     if (item.artist === artist) {
       item.albums.forEach(album => {
         if (album.name === album) {
-          return item;
+          found = item;
         }
       });
     }
   });
 
-  return null;
+  return found;
 };
 
 const buildLibrary = tracks => {
@@ -66,6 +67,10 @@ const buildLibrary = tracks => {
   tracks.forEach(track => {
     const item = getLibraryArtist(library, track.artist);
     if (typeof item === 'undefined') {
+      const item = {
+        artist: track.artist,
+        albums: []
+      };
       library.push({artist: track.artist});
     }
     else {
@@ -73,16 +78,19 @@ const buildLibrary = tracks => {
     }
   });
 
-  // // Build albums
-  // tracks.forEach(track => {
-  //   const item = getLibraryAlbum(library, track.artist, track.album);
-  //   if (item === null) {
-  //     console.log(`TODO`);
-  //   }
-  //   else {
-  //     const album = item.album[track.album];
-  //   }
-  // });
+  // Build albums
+  tracks.forEach(track => {
+    const item = getLibraryAlbum(library, track.artist, track.album);
+    if (typeof item === 'undefined') {
+      console.log(`TODO`);
+    }
+    else {
+      item.albums[track.album] = {
+        name: track.album,
+        tracks: []
+      };
+    }
+  });
 
   return library;
 };
