@@ -1,9 +1,5 @@
 'use strict';
 
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3({apiVersion: '2006-03-01'});
-const documentClient = new AWS.DynamoDB.DocumentClient();
-
 const { getS3Keys, getS3ObjectTags } = require('./common');
 
 const trackBucket = process.env.TRACK_BUCKET;
@@ -31,7 +27,17 @@ const createTrack = trackKey =>
 const searchObject = (obj, term) => {
   var found = false;
   Object.keys(obj).forEach(key => {
-    found = (found || term in obj[key]) ? true : false;
+    console.log(`Looking at key: ${key} and object key: ${obj[key]}`);
+    found = (found || term === obj[key]) ? true : false;
+  });
+
+  return found;
+};
+
+const searchLibraryArtist = (library, artist) => {
+  var found = false;
+  library.forEach(item => {
+    found = (found || item.artist === artist) ? true : false;
   });
 
   return found;
@@ -41,12 +47,17 @@ const buildLibrary = tracks => {
   const library = [];
 
   tracks.forEach(track => {
-    const item = {
-      artist: track.artist
-    };
-    library.push(item);
 
-    console.log(`Is term ${track.artist} in ${item}? ${searchObject(item, track.artist)}`);
+    if (searchLibraryArtist(library, track.artist)) {
+      console.log(`${track.artist} already in library`);
+    }
+    else {
+      const item = {
+        artist: track.artist,
+        more: 'something'
+      };
+      library.push(item);
+    }
   });
 
   return library;
