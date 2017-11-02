@@ -38,11 +38,11 @@ const getTrackKeys = trackKeyParams =>
     });
   });
 
-const getTrackTags = track =>
+const getTrackTags = trackKey =>
   new Promise((resolve, reject) => {
     const taggingParams = {
       Bucket: trackBucket,
-      Key: track.key
+      Key: trackKey.key
     };
     s3.getObjectTagging(taggingParams, function(err, trackTags) {
       if (err) {
@@ -50,9 +50,9 @@ const getTrackTags = track =>
       }
       else {
         trackTags.TagSet.forEach(trackTag => {
-          track[`${trackTag.Key}`] = trackTag.Value;
+          trackKey[`${trackTag.Key}`] = trackTag.Value;
         });
-        resolve(track);
+        resolve(trackKey);
       }
     });
   });
