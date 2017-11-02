@@ -24,17 +24,16 @@ const getTrackKeys = trackKeyParams =>
         if (returnedTracks.IsTruncated) {
             trackKeyParams.ContinuationToken = returnedTracks.NextContinuationToken;
             getTrackKeys(trackKeyParams)
-              .then(nextKeys => {
-                resolve(nextKeys);
-                return;
+              .then(moreKeys => {
+                resolve(trackKeys.concat(moreKeys));
               })
               .catch(err => {
                 reject(err);
-                return;
               });
         }
-
-        resolve(trackKeys);
+        else {
+          resolve(trackKeys);
+        }
       }
     });
   });
