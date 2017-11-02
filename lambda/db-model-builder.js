@@ -60,12 +60,8 @@ const buildLibrary = tracks => {
 
   // Build artists
   tracks.forEach(track => {
-    if (searchLibraryArtists(library, track.artist)) {
-      const item = {
-        artist: track.artist,
-        more: 'something'
-      };
-      library.push(item);
+    if (getLibraryArtist(library, track.artist) === null) {
+      library.push({artist: track.artist});
     }
     else {
       console.log(`${track.artist} already in library`);
