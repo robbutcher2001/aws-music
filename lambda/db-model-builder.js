@@ -98,7 +98,6 @@ const buildLibrary = tracks => {
   });
 
   // Add tracks
-  // Build albums
   tracks.forEach(track => {
     const item = getLibraryAlbum(library, track.artist, track.album);
     if (typeof item !== 'undefined') {
