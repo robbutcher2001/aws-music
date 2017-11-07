@@ -101,7 +101,8 @@ const buildLibrary = tracks => {
   tracks.forEach(track => {
     const item = getLibraryAlbum(library, track.artist, track.album);
     if (typeof item !== 'undefined') {
-      item.albums[track.album].tracks.push({
+      const album = item.albums.find(album => album.name === track.album);
+      album.tracks.push({
         title: track.title,
         year: track.year
       });
@@ -125,8 +126,7 @@ exports.handler = (event, context, callback) => {
 
       Promise.all(trackResponses)
         .then(tracks => {
-          console.log(JSON.stringify(buildLibrary(tracks)));
-          callback(null, JSON.stringify(tracks));
+          callback(null, JSON.stringify(buildLibrary(tracks)));
         })
         .catch(err => {
           callback(`Could not create all tracks: ${err}`);
