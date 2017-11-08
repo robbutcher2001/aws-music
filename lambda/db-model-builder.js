@@ -12,7 +12,7 @@ const createTrack = trackKey =>
     getS3ObjectTags({Bucket: trackBucket, Key: track.key})
       .then(trackTags => {
         trackTags.TagSet.forEach(trackTag => {
-          track[`${trackTag.Key}`] = (trackTag.Value === '' ? ' ' : trackTag.Value);
+          track[`${trackTag.Key}`] = (trackTag.Value === '' ? '-' : trackTag.Value);
         });
         resolve(track);
       })
@@ -40,15 +40,27 @@ const buildDbModelItems = tracksFlatList => {
   const items = [];
 
   getUniqueArtists(tracksFlatList).forEach(artistItem => {
-    const artist = {uuid: uuidv1(), artist: artistItem.artist, albums: []};
-    items.push(artist);
-    getArtistAlbums(tracksFlatList, artistItem.artist).forEach(albumItem => {
-      const album = {uuid: uuidv1(), name: albumItem.album, tracks: []};
-      artist.albums.push(album);
-      getAlbumTracks(tracksFlatList, artistItem.artist, albumItem.album).forEach(trackItem => {
-        album.tracks.push({uuid: uuidv1(), key: trackItem.key, title: trackItem.title, year: trackItem.year});
+    if (typeof artistItem.artist !== 'undefined') {
+      const artist = {uuid: uuidv1(), artist: artistItem.artist, albums: []};
+      items.push(artist);
+      getArtistAlbums(tracksFlatList, artistItem.artist).forEach(albumItem => {
+        if (typeof albumItem.album !== 'undefined') {
+          const album = {uuid: uuidv1(), name: albumItem.album, tracks: []};
+          artist.albums.push(album);
+          getAlbumTracks(tracksFlatList, artistItem.artist, albumItem.album).forEach(trackItem => {
+            album.tracks.push({uuid: uuidv1(), key: trackItem.key, title: trackItem.title, year: trackItem.year});
+          });
+        }
+        else {
+          //TODO: log as warning
+          console.log(`Item [album] not added to DB ${JSON.stringify(albumItem)}`);
+        }
       });
-    });
+    }
+    else {
+      //TODO: log as warning
+      console.log(`Item [artist] not added to DB ${JSON.stringify(artistItem)}`);
+    }
   });
 
   return items;
