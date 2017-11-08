@@ -17,7 +17,6 @@ const putDocument = dynamoParams =>
     documentClient.put(dynamoParams)
       .then(data => resolve(data))
       .catch(err => reject(err));
-    });
   });
 
 module.exports = {

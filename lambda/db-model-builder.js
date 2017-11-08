@@ -78,6 +78,6 @@ exports.handler = (event, context, callback) => {
         });
     })
     .catch(err => {
-        callback(`Could not get track keys from S3: ${err}`)
+        callback(`Could not get track keys from S3: ${err}`);
     });
 };
