@@ -35,12 +35,12 @@ const getArtistAlbums = (tracksFlatList, artist) => {
 const getAlbumTracks = (tracksFlatList, artist, album) =>
   tracksFlatList.filter(track => track.artist === artist && track.album === album);
 
-const buildDbModel = tracksFlatList => {
-  const library = [];
+const buildDbModelItems = tracksFlatList => {
+  const items = [];
 
   getUniqueArtists(tracksFlatList).forEach(artistItem => {
     const artist = {artist: artistItem.artist, albums: []};
-    library.push(artist);
+    items.push(artist);
     getArtistAlbums(tracksFlatList, artistItem.artist).forEach(albumItem => {
       const album = {name: albumItem.album, tracks: []};
       artist.albums.push(album);
@@ -50,7 +50,7 @@ const buildDbModel = tracksFlatList => {
     });
   });
 
-  return library;
+  return items;
 };
 
 exports.handler = (event, context, callback) => {
@@ -65,8 +65,11 @@ exports.handler = (event, context, callback) => {
       console.log(uuidv1());
       Promise.all(trackPromises)
         .then(tracksFlatList => {
-          const items = buildDbModel(tracksFlatList);
-          putDocument({TableName: 'Artists', Item: items})
+          const itemPromises = [];
+          buildDbModelItems(tracksFlatList).forEach(item => {
+            itemPromises.push(putDocument({TableName: 'Artists', Item: item}));
+          });
+          Promise.all(itemPromises)
             .then(data => callback(null, data))
             .catch(err => callback(err));
         })
