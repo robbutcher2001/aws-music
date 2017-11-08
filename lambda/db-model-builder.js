@@ -4,6 +4,7 @@ const uuidv1 = require('uuid/v1');
 const { getS3Keys, getS3ObjectTags, putDocument } = require('./common');
 
 const trackBucket = process.env.TRACK_BUCKET;
+const dbLibraryTable = process.env.DB_LIBRARY_TABLE;
 
 const createTrack = trackKey =>
   new Promise((resolve, reject) => {
@@ -39,13 +40,13 @@ const buildDbModelItems = tracksFlatList => {
   const items = [];
 
   getUniqueArtists(tracksFlatList).forEach(artistItem => {
-    const artist = {artist: artistItem.artist, albums: []};
+    const artist = {uuid: uuidv1(), artist: artistItem.artist, albums: []};
     items.push(artist);
     getArtistAlbums(tracksFlatList, artistItem.artist).forEach(albumItem => {
-      const album = {name: albumItem.album, tracks: []};
+      const album = {uuid: uuidv1(), name: albumItem.album, tracks: []};
       artist.albums.push(album);
       getAlbumTracks(tracksFlatList, artistItem.artist, albumItem.album).forEach(trackItem => {
-        album.tracks.push({key: trackItem.key, title: trackItem.title, year: trackItem.year});
+        album.tracks.push({uuid: uuidv1(), key: trackItem.key, title: trackItem.title, year: trackItem.year});
       });
     });
   });
@@ -62,12 +63,11 @@ exports.handler = (event, context, callback) => {
         trackPromises.push(createTrack(trackKey));
       });
 
-      console.log(uuidv1());
       Promise.all(trackPromises)
         .then(tracksFlatList => {
           const itemPromises = [];
           buildDbModelItems(tracksFlatList).forEach(item => {
-            itemPromises.push(putDocument({TableName: 'Artists', Item: item}));
+            itemPromises.push(putDocument({TableName: dbLibraryTable, Item: item}));
           });
           Promise.all(itemPromises)
             .then(data => callback(null, data))
