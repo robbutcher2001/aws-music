@@ -13,6 +13,20 @@ const extractArtists = tracksFlatList => {
   });
 };
 
+const extractAlbums = (tracksFlatList, artist) => {
+  //list of all tracks with same artist, could contain different albums
+  const artistsTracks = tracksFlatList.filter(track => track.artist === artist);
+
+  return artistsTracks.filter((track, index, originalArray) => {
+    return originalArray.findIndex(searchTrack => track.album === searchTrack.album) === index;
+  });
+};
+
+const extractTracks = (tracksFlatList, artist, album) => {
+  //list of all tracks with same artist, in same album
+  return tracksFlatList.filter(track => track.artist === artist && track.album === album);
+};
+
 const createTrack = trackKey =>
   new Promise((resolve, reject) => {
     const track = trackKey;
