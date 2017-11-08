@@ -12,7 +12,7 @@ const createTrack = trackKey =>
     getS3ObjectTags({Bucket: trackBucket, Key: track.key})
       .then(trackTags => {
         trackTags.TagSet.forEach(trackTag => {
-          track[`${trackTag.Key}`] = ((typeof trackTag.Value === 'undefined' || trackTag.Value === '') ? '-' : trackTag.Value);
+          track[`${trackTag.Key}`] = (trackTag.Value === '' ? '-' : trackTag.Value);
         });
         resolve(track);
       })
@@ -40,11 +40,11 @@ const buildDbModelItems = tracksFlatList => {
   const items = [];
 
   getUniqueArtists(tracksFlatList).forEach(artistItem => {
-    if (typeof artistItem.artist !== '-') {
+    if (typeof artistItem.artist !== 'undefined') {
       const artist = {uuid: uuid(), artist: artistItem.artist, albums: []};
       items.push(artist);
       getArtistAlbums(tracksFlatList, artistItem.artist).forEach(albumItem => {
-        if (typeof albumItem.album !== '-') {
+        if (typeof albumItem.album !== 'undefined') {
           const album = {uuid: uuid(), name: albumItem.album, tracks: []};
           artist.albums.push(album);
           getAlbumTracks(tracksFlatList, artistItem.artist, albumItem.album).forEach(trackItem => {
