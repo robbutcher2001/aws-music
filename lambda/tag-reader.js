@@ -48,7 +48,9 @@ exports.handler = (event, context, callback) => {
           fileTags.push({Key: 'artist', Value: cleanTag(tags.tags.artist)});
           fileTags.push({Key: 'year', Value: cleanTag(tags.tags.year)});
           fileTags.push({Key: 'genre', Value: cleanTag(tags.tags.genre)});
-          fileTags.push({Key: 'comment', Value: cleanTag(tags.tags.comment.text)});
+          fileTags.push({Key: 'comment', Value: cleanTag(
+            (typeof tags.tags.comment !== 'undefined' ? tags.tags.comment.text : '-')
+          )});
 
           s3.putObjectTagging(uploadedTrack, function(err, data) {
             if (err) {

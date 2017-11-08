@@ -48,7 +48,14 @@ const buildDbModelItems = tracksFlatList => {
           const album = {uuid: uuid(), name: albumItem.album, tracks: []};
           artist.albums.push(album);
           getAlbumTracks(tracksFlatList, artistItem.artist, albumItem.album).forEach(trackItem => {
-            album.tracks.push({uuid: uuid(), key: trackItem.key, title: trackItem.title, year: trackItem.year});
+            album.tracks.push({
+                uuid: uuid(),
+                key: trackItem.key,
+                title: trackItem.title,
+                year: trackItem.year,
+                genre: trackItem.genre,
+                comment: trackItem.comment
+            });
           });
         }
         else {
@@ -80,7 +87,7 @@ exports.handler = (event, context, callback) => {
             itemPromises.push(putDocument({TableName: dbLibraryTable, Item: item}));
           });
           Promise.all(itemPromises)
-            .then(data => callback(null, data))
+            .then(success => callback(null, `Artists [${itemPromises.length}] successfully added to library`))
             .catch(err => callback(err));
         })
         .catch(err => {
