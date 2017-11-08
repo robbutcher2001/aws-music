@@ -6,26 +6,18 @@ const trackBucket = process.env.TRACK_BUCKET;
 
 const extractArtists = tracksFlatList => {
   return tracksFlatList.filter((track, index, originalArray) => {
-    const foundIndex = originalArray.findIndex((searchTrack) => {
-      return track.artist === searchTrack.artist;
-    });
-    return foundIndex === index;
+    return originalArray.findIndex(searchTrack => track.artist === searchTrack.artist) === index;
   });
 };
 
 const extractAlbums = (tracksFlatList, artist) => {
-  //list of all tracks with same artist, could contain different albums
-  const artistsTracks = tracksFlatList.filter(track => track.artist === artist);
-
-  return artistsTracks.filter((track, index, originalArray) => {
+  return tracksFlatList.filter(track => track.artist === artist).filter((track, index, originalArray) => {
     return originalArray.findIndex(searchTrack => track.album === searchTrack.album) === index;
   });
 };
 
-const extractTracks = (tracksFlatList, artist, album) => {
-  //list of all tracks with same artist, in same album
-  return tracksFlatList.filter(track => track.artist === artist && track.album === album);
-};
+const extractTracks = (tracksFlatList, artist, album) =>
+  tracksFlatList.filter(track => track.artist === artist && track.album === album);
 
 const createTrack = trackKey =>
   new Promise((resolve, reject) => {
