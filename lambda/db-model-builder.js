@@ -4,6 +4,15 @@ const { getS3Keys, getS3ObjectTags } = require('./common');
 
 const trackBucket = process.env.TRACK_BUCKET;
 
+const extractArtists = tracksFlatList => {
+  return tracksFlatList.filter((track, index, originalArray) => {
+    const foundIndex = originalArray.findIndex((searchTrack) => {
+      return track.artist === searchTrack.artist;
+    });
+    return foundIndex === index;
+  });
+};
+
 const createTrack = trackKey =>
   new Promise((resolve, reject) => {
     const track = trackKey;
@@ -126,7 +135,7 @@ exports.handler = (event, context, callback) => {
 
       Promise.all(trackResponses)
         .then(tracks => {
-          callback(null, JSON.stringify(buildLibrary(tracks)));
+          callback(null, JSON.stringify(extractArtists(tracks)));
         })
         .catch(err => {
           callback(`Could not create all tracks: ${err}`);
