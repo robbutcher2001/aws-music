@@ -149,6 +149,8 @@ exports.handler = (event, context, callback) => {
 
       Promise.all(trackResponses)
         .then(tracks => {
+          console.log(extractAlbums(tracks, 'London Grammar'));
+          console.log(extractTracks(tracks, 'London Grammar', 'If You Wait'));
           callback(null, JSON.stringify(extractArtists(tracks)));
         })
         .catch(err => {
