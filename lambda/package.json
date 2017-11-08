@@ -4,6 +4,7 @@
   "description": "Lambda functions for middleware layer of music archive app",
   "author": "Rob Butcher",
   "dependencies": {
-    "jsmediatags": "^3.8.1"
+    "jsmediatags": "^3.8.1",
+    "uuid": "^3.1.0"
   }
 }

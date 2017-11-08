@@ -1,6 +1,7 @@
 'use strict';
 
-const { getS3Keys, getS3ObjectTags } = require('./common');
+const uuidv1 = require('uuid/v1');
+const { getS3Keys, getS3ObjectTags, putDocument } = require('./common');
 
 const trackBucket = process.env.TRACK_BUCKET;
 
@@ -61,9 +62,13 @@ exports.handler = (event, context, callback) => {
         trackPromises.push(createTrack(trackKey));
       });
 
+      console.log(uuidv1());
       Promise.all(trackPromises)
         .then(tracksFlatList => {
-          callback(null, JSON.stringify(buildDbModel(tracksFlatList)));
+          const items = buildDbModel(tracksFlatList);
+          putDocument({TableName: 'Artists', Item: items})
+            .then(data => callback(null, data))
+            .catch(err => callback(err));
         })
         .catch(err => {
           callback(`Could not create all tracks: ${err}`);
