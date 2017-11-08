@@ -12,7 +12,7 @@ const createTrack = trackKey =>
     getS3ObjectTags({Bucket: trackBucket, Key: track.key})
       .then(trackTags => {
         trackTags.TagSet.forEach(trackTag => {
-          track[`${trackTag.Key}`] = trackTag.Value;
+          track[`${trackTag.Key}`] = (trackTag.Value === '' ? ' ' : trackTag.Value);
         });
         resolve(track);
       })
