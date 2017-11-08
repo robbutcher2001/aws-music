@@ -11,6 +11,8 @@ Parameters:
     Type: String
   S3OriginAccessIdentity:
     Type: String
+  DbLibraryTableStore:
+    Type: String
 Conditions:
   CreateProdResources: !Equals [ !Ref Env, 'prod' ]
 Resources:
@@ -192,6 +194,8 @@ Resources:
         Fn::GetAtt:
           - DBModelBuilderRole
           - Arn
+      Timeout: 120
       Environment:
         Variables:
           TRACK_BUCKET: !Ref MusicArchiveFileLibraryBucket
+          DB_LIBRARY_TABLE: !Ref DbLibraryTableStore

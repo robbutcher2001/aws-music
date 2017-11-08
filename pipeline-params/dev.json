@@ -2,6 +2,7 @@
   "Parameters": {
     "Env": "dev",
     "PublicURL": "test-music.robertbutcher.co.uk",
-    "HostedZoneId": "Z36L4CDWNLF2IB"
+    "HostedZoneId": "Z36L4CDWNLF2IB",
+    "DbLibraryTableStore": "library-dev"
   }
 }

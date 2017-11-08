@@ -17,7 +17,7 @@ exports.handler = (event, context, callback) => {
     return callback(`Too many records in event [${event.Records.length}], can only process 1`);
   }
 
-  const uploadedTrack = { 
+  const uploadedTrack = {
     Bucket: event.Records[0].s3.bucket.name,
     Key: decodeURIComponent(event.Records[0].s3.object.key).replace(/\+/g, ' ')
   };
@@ -47,6 +47,10 @@ exports.handler = (event, context, callback) => {
           fileTags.push({Key: 'album', Value: cleanTag(tags.tags.album)});
           fileTags.push({Key: 'artist', Value: cleanTag(tags.tags.artist)});
           fileTags.push({Key: 'year', Value: cleanTag(tags.tags.year)});
+          fileTags.push({Key: 'genre', Value: cleanTag(tags.tags.genre)});
+          fileTags.push({Key: 'comment', Value: cleanTag(
+            (typeof tags.tags.comment !== 'undefined' ? tags.tags.comment.text : '-')
+          )});
 
           s3.putObjectTagging(uploadedTrack, function(err, data) {
             if (err) {
@@ -62,6 +66,6 @@ exports.handler = (event, context, callback) => {
           callback(`Could not identify tags from track: ${err}`);
         }
       });
-    }); 
+    });
   });
 };
