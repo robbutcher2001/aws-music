@@ -4,21 +4,6 @@ const { getS3Keys, getS3ObjectTags } = require('./common');
 
 const trackBucket = process.env.TRACK_BUCKET;
 
-const extractArtists = tracksFlatList => {
-  return tracksFlatList.filter((track, index, originalArray) => {
-    return originalArray.findIndex(searchTrack => track.artist === searchTrack.artist) === index;
-  });
-};
-
-const extractAlbums = (tracksFlatList, artist) => {
-  return tracksFlatList.filter(track => track.artist === artist).filter((track, index, originalArray) => {
-    return originalArray.findIndex(searchTrack => track.album === searchTrack.album) === index;
-  });
-};
-
-const extractTracks = (tracksFlatList, artist, album) =>
-  tracksFlatList.filter(track => track.artist === artist && track.album === album);
-
 const createTrack = trackKey =>
   new Promise((resolve, reject) => {
     const track = trackKey;
@@ -38,6 +23,21 @@ const createTrack = trackKey =>
         reject(err);
       });
   });
+
+const getUniqueArtists = tracksFlatList => {
+  return tracksFlatList.filter((track, index, originalArray) => {
+    return originalArray.findIndex(searchTrack => track.artist === searchTrack.artist) === index;
+  });
+};
+
+const getArtistAlbums = (tracksFlatList, artist) => {
+  return tracksFlatList.filter(track => track.artist === artist).filter((track, index, originalArray) => {
+    return originalArray.findIndex(searchTrack => track.album === searchTrack.album) === index;
+  });
+};
+
+const getAlbumTracks = (tracksFlatList, artist, album) =>
+  tracksFlatList.filter(track => track.artist === artist && track.album === album);
 
 const searchObject = (obj, term) => {
   var found = false;
@@ -73,6 +73,24 @@ const getLibraryAlbum = (library, artist, album) => {
   });
 
   return found;
+};
+
+const buildDbModel = tracksFlatList => {
+  const library = [];
+
+  getUniqueArtists(tracksFlatList).forEach(artistItem => {
+    const artist = {artist: artistItem.artist, albums: []};
+    getArtistAlbums(tracksFlatList, artistItem.artist).forEach(albumItem => {
+      const album = {name: albumItem.album, tracks: []};
+      artist.albums.push(album);
+      getAlbumTracks(tracksFlatList, artistItem.artist, albumItem.album).forEach(trackItem => {
+        album.tracks.push({title: trackItem.title, year: trackItem.year});
+        library.push(artist);
+      });
+    });
+  });
+
+  return library;
 };
 
 const buildLibrary = tracks => {
@@ -140,10 +158,8 @@ exports.handler = (event, context, callback) => {
       });
 
       Promise.all(trackResponses)
-        .then(tracks => {
-          console.log(extractAlbums(tracks, 'London Grammar'));
-          console.log(extractTracks(tracks, 'London Grammar', 'If You Wait'));
-          callback(null, JSON.stringify(extractArtists(tracks)));
+        .then(tracksFlatList => {
+          callback(null, JSON.stringify(buildDbModel(tracksFlatList)));
         })
         .catch(err => {
           callback(`Could not create all tracks: ${err}`);
