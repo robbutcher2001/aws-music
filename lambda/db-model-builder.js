@@ -80,12 +80,12 @@ const buildDbModel = tracksFlatList => {
 
   getUniqueArtists(tracksFlatList).forEach(artistItem => {
     const artist = {artist: artistItem.artist, albums: []};
+    library.push(artist);
     getArtistAlbums(tracksFlatList, artistItem.artist).forEach(albumItem => {
       const album = {name: albumItem.album, tracks: []};
       artist.albums.push(album);
       getAlbumTracks(tracksFlatList, artistItem.artist, albumItem.album).forEach(trackItem => {
         album.tracks.push({title: trackItem.title, year: trackItem.year});
-        library.push(artist);
       });
     });
   });
@@ -152,12 +152,12 @@ exports.handler = (event, context, callback) => {
   getS3Keys({Bucket: trackBucket})
     .then(trackKeys => {
 
-      const trackResponses = [];
+      const trackPromises = [];
       trackKeys.forEach(trackKey => {
-        trackResponses.push(createTrack(trackKey));
+        trackPromises.push(createTrack(trackKey));
       });
 
-      Promise.all(trackResponses)
+      Promise.all(trackPromises)
         .then(tracksFlatList => {
           callback(null, JSON.stringify(buildDbModel(tracksFlatList)));
         })
