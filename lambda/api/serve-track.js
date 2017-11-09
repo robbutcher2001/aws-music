@@ -26,3 +26,15 @@ exports.handler = (event, context, callback) => {
   //user will not be able to guess location of other files due to unique UUID filenames
   //protect this endpoint with IAM so user cannot generate URLs for all files in library without being logged in
 }
+
+
+function getArtists() {
+  var params = {
+  ProjectionExpression: "artist",
+    TableName: "library-dev"
+   };
+dynamodb.scan(params, function(err, data) {
+ if (err) callback(err); // an error occurred
+ else     callback(null, data);           // successful response
+});
+}
