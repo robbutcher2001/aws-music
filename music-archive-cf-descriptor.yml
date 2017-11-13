@@ -71,6 +71,18 @@ Resources:
                 Rules:
                   - Name: suffix
                     Value: m4a
+  #S3 Music File Bucket
+  ServeMusicFileBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      BucketName:
+        Fn::Join: [ '-', [ 'serve-music-file', !Ref Env ] ]
+      LifecycleConfiguration:
+        Rules:
+          - Id: PurgeStaleTracks
+            Status: Enabled
+            ExpirationInDays: 1
   #CloudFront distro to sit in front of bucket and reduce outbound cost
   MusicArchiveDistribution:
     Type: AWS::CloudFront::Distribution
