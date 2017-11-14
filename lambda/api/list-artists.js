@@ -1,6 +1,6 @@
 'use strict';
 
-const { scanDB } = require('./common');
+const { scanDB } = require('../common');
 
 const dbLibraryTable = process.env.DB_LIBRARY_TABLE;
 
