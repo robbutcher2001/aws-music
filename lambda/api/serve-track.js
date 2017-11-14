@@ -30,7 +30,7 @@ exports.handler = (event, context, callback) => {
 
 function getArtists() {
   var params = {
-  ProjectionExpression: "artist",
+  ProjectionExpression: "artist, id",
     TableName: "library-dev"
    };
 dynamodb.scan(params, function(err, data) {

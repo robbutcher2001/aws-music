@@ -77,7 +77,7 @@ Resources:
     Properties:
       AccessControl: Private
       BucketName:
-        Fn::Join: [ '-', [ 'serve-music-file', !Ref Env ] ]
+        Fn::Join: [ '-', [ 'music-archive-serve-files', !Ref Env ] ]
       LifecycleConfiguration:
         Rules:
           - Id: PurgeStaleTracks
@@ -229,6 +229,19 @@ Resources:
         Variables:
           TRACK_BUCKET: !Ref MusicArchiveFileLibraryBucket
           DB_LIBRARY_TABLE: !Ref DbLibraryTableStore
+  ListArtistsLambdaFunction:
+    DependsOn: ApiLambdaRole
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: lambda/api/list-artists.handler
+      Runtime: nodejs6.10
+      Code:
+        S3Bucket: 'music-archive-source-code'
+        S3Key: %{SourceCodeBucket}
+      Role:
+        Fn::GetAtt:
+          - ApiLambdaRole
+          - Arn
   ServeTrackLambdaFunction:
     DependsOn: ApiLambdaRole
     Type: AWS::Lambda::Function
