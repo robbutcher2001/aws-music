@@ -139,6 +139,8 @@ Resources:
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
+        - AttributeName: artist
+          AttributeType: S
       GlobalSecondaryIndexes:
         - IndexName: artist-index
           KeySchema:
