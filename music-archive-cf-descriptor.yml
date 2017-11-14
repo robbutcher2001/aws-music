@@ -189,7 +189,7 @@ Resources:
     DependsOn: TagReaderRole
     Type: AWS::Lambda::Function
     Properties:
-      Handler: lambda/tag-reader.handler
+      Handler: lambda/services/model/tag-reader.handler
       Runtime: nodejs6.10
       Code:
         S3Bucket: 'music-archive-source-code'
@@ -215,7 +215,7 @@ Resources:
     DependsOn: DBModelBuilderRole
     Type: AWS::Lambda::Function
     Properties:
-      Handler: lambda/db-model-builder.handler
+      Handler: lambda/services/model/db-model-builder.handler
       Runtime: nodejs6.10
       Code:
         S3Bucket: 'music-archive-source-code'
