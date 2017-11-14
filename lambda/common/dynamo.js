@@ -14,6 +14,18 @@ const putDocument = dynamoParams =>
     });
   });
 
+const scanDB = dynamoParams =>
+  new Promise((resolve, reject) => {
+    documentClient.scan(dynamoParams, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+
 module.exports = {
-  putDocument
+  putDocument,
+  scanDB
 };

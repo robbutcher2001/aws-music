@@ -16,7 +16,7 @@ Parameters:
 Conditions:
   CreateProdResources: !Equals [ !Ref Env, 'prod' ]
 Resources:
-  #S3 Dist Bucket
+  # S3 Dist Bucket
   MusicArchiveFeDistributionBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -46,7 +46,7 @@ Resources:
             Action:
               - 's3:ListBucket'
             Resource: !GetAtt MusicArchiveFeDistributionBucket.Arn
-  #S3 Music File Bucket
+  # S3 Music File Bucket
   MusicArchiveFileLibraryBucket:
     DependsOn: TagReaderFunction
     DependsOn: TagReaderLambdaPermission
@@ -71,7 +71,19 @@ Resources:
                 Rules:
                   - Name: suffix
                     Value: m4a
-  #CloudFront distro to sit in front of bucket and reduce outbound cost
+  # S3 Music File Bucket
+  ServeMusicFileBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      BucketName:
+        Fn::Join: [ '-', [ 'music-archive-serve-files', !Ref Env ] ]
+      LifecycleConfiguration:
+        Rules:
+          - Id: PurgeStaleTracks
+            Status: Enabled
+            ExpirationInDays: 1
+  # CloudFront distro to sit in front of bucket and reduce outbound cost
   MusicArchiveDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -93,6 +105,19 @@ Resources:
           S3OriginConfig:
             OriginAccessIdentity:
               Fn::Join: [ '', [ 'origin-access-identity/cloudfront/', !Ref S3OriginAccessIdentity ] ]
+        - DomainName:
+            Fn::Join: [ '', [ !Ref MusicLibraryApi, '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com' ] ]
+          Id:
+            Fn::Join: [ '', [ 'origin-', !Ref MusicLibraryApi, '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com' ] ]
+          OriginPath:
+            Fn::Join: [ '', [ '/', !Ref Env ] ]
+          CustomOriginConfig:
+            HTTPSPort: '443'
+            OriginProtocolPolicy: https-only
+            OriginSSLProtocols:
+            - 'TLSv1'
+            - 'TLSv1.1'
+            - 'TLSv1.2'
         DefaultCacheBehavior:
           AllowedMethods:
           - GET
@@ -105,7 +130,23 @@ Resources:
             Cookies:
               Forward: all
           ViewerProtocolPolicy: redirect-to-https
-  #DNS Record Set
+        CacheBehaviors:
+        - AllowedMethods:
+          - GET
+          - HEAD
+          - OPTIONS
+          TargetOriginId:
+            Fn::Join: [ '', [ 'origin-', !Ref MusicLibraryApi, '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com' ] ]
+          PathPattern: '/api/*'
+          DefaultTTL: 60
+          MaxTTL: 3600
+          MinTTL: 60
+          ForwardedValues:
+            QueryString: true
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+  # DNS Record Set
   MusicArchiveDistributionDNSRecord:
     Type: AWS::Route53::RecordSet
     Properties:
@@ -116,7 +157,33 @@ Resources:
         DNSName: !GetAtt MusicArchiveDistribution.DomainName
         EvaluateTargetHealth: false
         HostedZoneId: Z2FDTNDATAQYW2
-  #Lambda Role Definitions
+  # DynamoDB table for library
+  MusicLibraryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DbLibraryTableStore
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      - AttributeName: artist
+        AttributeType: S
+      GlobalSecondaryIndexes:
+      - IndexName: artist-index
+        KeySchema:
+          - AttributeName: artist
+            KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: 4
+          WriteCapacityUnits: 4
+      ProvisionedThroughput:
+        ReadCapacityUnits: 4
+        WriteCapacityUnits: 4
+  # Lambda Role Definitions
   TagReaderRole:
     Type: AWS::IAM::Role
     Properties:
@@ -154,12 +221,30 @@ Resources:
         - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
         - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
         - 'arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess'
-  #Lambda Function Definitions
+  ApiLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Join: [ '-', [ 'api-lambda-role', !Ref Env ] ]
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - 'arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess'
+  # Lambda Function Definitions for Model
   TagReaderFunction:
     DependsOn: TagReaderRole
     Type: AWS::Lambda::Function
     Properties:
-      Handler: lambda/tag-reader.handler
+      Handler: lambda/services/model/tag-reader.handler
       Runtime: nodejs6.10
       Code:
         S3Bucket: 'music-archive-source-code'
@@ -185,7 +270,7 @@ Resources:
     DependsOn: DBModelBuilderRole
     Type: AWS::Lambda::Function
     Properties:
-      Handler: lambda/db-model-builder.handler
+      Handler: lambda/services/model/db-model-builder.handler
       Runtime: nodejs6.10
       Code:
         S3Bucket: 'music-archive-source-code'
@@ -199,3 +284,66 @@ Resources:
         Variables:
           TRACK_BUCKET: !Ref MusicArchiveFileLibraryBucket
           DB_LIBRARY_TABLE: !Ref DbLibraryTableStore
+  # Lambda Function Definitions for API
+  ListArtistsLambdaFunction:
+    DependsOn: ApiLambdaRole
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: lambda/api/list-artists.handler
+      Runtime: nodejs6.10
+      Code:
+        S3Bucket: 'music-archive-source-code'
+        S3Key: %{SourceCodeBucket}
+      Role:
+        Fn::GetAtt:
+          - ApiLambdaRole
+          - Arn
+      Environment:
+        Variables:
+          DB_LIBRARY_TABLE: !Ref DbLibraryTableStore
+  ListArtistsLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      FunctionName:
+        Fn::GetAtt:
+          - ListArtistsLambdaFunction
+          - Arn
+      SourceArn:
+        Fn::Join: [ ':', [ 'arn:aws:execute-api', !Ref 'AWS::Region', !Ref 'AWS::AccountId', '*' ] ]
+  ServeTrackLambdaFunction:
+    DependsOn: ApiLambdaRole
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: lambda/api/serve-track.handler
+      Runtime: nodejs6.10
+      Code:
+        S3Bucket: 'music-archive-source-code'
+        S3Key: %{SourceCodeBucket}
+      Role:
+        Fn::GetAtt:
+          - ApiLambdaRole
+          - Arn
+  # Music Library API Gateway Definition
+  MusicLibraryApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name:
+        Fn::Join: [ '', [ 'Music Library API: ', !Ref Env ] ]
+      Description: 'API layer for the Music Library application.'
+      BodyS3Location:
+        Bucket: 'music-archive-source-code'
+        Key: %{SwaggerLocation}
+  MusicLibraryApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId: !Ref MusicLibraryApi
+  MusicLibraryApiStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId: !Ref MusicLibraryApi
+      DeploymentId: !Ref MusicLibraryApiDeployment
+      StageName: !Ref Env
+      Variables:
+        ListArtistsLambdaFunction: !Ref ListArtistsLambdaFunction

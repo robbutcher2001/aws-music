@@ -3,11 +3,16 @@ phases:
   install:
     commands:
       - timestamp="`date +%s%N`"
+      - sed -ie "s/%{AccountRegion}/${AccountRegion}/g" lambda/api/definitions/swagger.yml
+      - sed -ie "s/%{AccountNumber}/${AccountNumber}/g" lambda/api/definitions/swagger.yml
+      - mv lambda/api/definitions/swagger.yml lambda/api/definitions/swagger-${timestamp}.yml
+      - aws s3 cp lambda/api/definitions/swagger-${timestamp}.yml s3://${SourceCodeBucket}
       - cd lambda
       - npm install
       - cd ..
       - zip -r lambda-source-${timestamp} lambda/*
       - aws s3 cp lambda-source-${timestamp}.zip s3://${SourceCodeBucket}
+      - sed -ie "s/%{SwaggerLocation}/swagger-${timestamp}.yml/g" music-archive-cf-descriptor.yml
       - sed -ie "s/%{SourceCodeBucket}/lambda-source-${timestamp}.zip/g" music-archive-cf-descriptor.yml
       - aws s3 cp music-archive-cf-descriptor.yml s3://${SourceCodeBucket}
 artifacts:
