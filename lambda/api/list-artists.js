@@ -16,4 +16,4 @@ exports.handler = (event, context, callback) => {
       response.message = err;
       callback(null, response);
     });
-}
+};

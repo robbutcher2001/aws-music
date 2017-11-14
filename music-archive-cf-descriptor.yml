@@ -245,6 +245,17 @@ Resources:
       Environment:
         Variables:
           DB_LIBRARY_TABLE: !Ref DbLibraryTableStore
+  ListArtistsLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      FunctionName:
+        Fn::GetAtt:
+          - ListArtistsLambdaFunction
+          - Arn
+      SourceArn:
+        Fn::Join: [ ':', [ 'arn:aws:execute-api', !Ref AWS::Region, !Ref AWS::AccountId, '*' ] ]
   ServeTrackLambdaFunction:
     DependsOn: ApiLambdaRole
     Type: AWS::Lambda::Function
