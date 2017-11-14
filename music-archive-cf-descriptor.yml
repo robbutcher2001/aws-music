@@ -130,7 +130,7 @@ Resources:
             Cookies:
               Forward: all
           ViewerProtocolPolicy: redirect-to-https
-        CacheBehavior:
+        CacheBehaviors:
           AllowedMethods:
           - GET
           - HEAD
