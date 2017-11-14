@@ -131,7 +131,7 @@ Resources:
               Forward: all
           ViewerProtocolPolicy: redirect-to-https
         CacheBehaviors:
-          AllowedMethods:
+        - AllowedMethods:
           - GET
           - HEAD
           - OPTIONS
@@ -163,23 +163,23 @@ Resources:
     Properties:
       TableName: !Ref DbLibraryTableStore
       KeySchema:
-        - AttributeName: id
-          KeyType: HASH
+      - AttributeName: id
+        KeyType: HASH
       AttributeDefinitions:
-        - AttributeName: id
-          AttributeType: S
-        - AttributeName: artist
-          AttributeType: S
+      - AttributeName: id
+        AttributeType: S
+      - AttributeName: artist
+        AttributeType: S
       GlobalSecondaryIndexes:
-        - IndexName: artist-index
-          KeySchema:
-            - AttributeName: artist
-              KeyType: HASH
-          Projection:
-            ProjectionType: ALL
-          ProvisionedThroughput:
-            ReadCapacityUnits: 4
-            WriteCapacityUnits: 4
+      - IndexName: artist-index
+        KeySchema:
+          - AttributeName: artist
+            KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: 4
+          WriteCapacityUnits: 4
       ProvisionedThroughput:
         ReadCapacityUnits: 4
         WriteCapacityUnits: 4
