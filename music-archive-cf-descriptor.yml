@@ -105,6 +105,19 @@ Resources:
           S3OriginConfig:
             OriginAccessIdentity:
               Fn::Join: [ '', [ 'origin-access-identity/cloudfront/', !Ref S3OriginAccessIdentity ] ]
+        - DomainName:
+            Fn::Join: [ '', [ !Ref MusicLibraryApi, '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com' ] ]
+          Id:
+            Fn::Join: [ '', [ 'origin-', !Ref MusicLibraryApi, '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com' ] ]
+          OriginPath:
+            Fn::Join: [ '', [ '/', !Ref Env ] ]
+          CustomOriginConfig:
+            HTTPSPort: '443'
+            OriginProtocolPolicy: https-only
+            OriginSSLProtocols:
+            - 'TLSv1'
+            - 'TLSv1.1'
+            - 'TLSv1.2'
         DefaultCacheBehavior:
           AllowedMethods:
           - GET
@@ -116,6 +129,22 @@ Resources:
             QueryString: true
             Cookies:
               Forward: all
+          ViewerProtocolPolicy: redirect-to-https
+        CacheBehavior:
+          AllowedMethods:
+          - GET
+          - HEAD
+          - OPTIONS
+          TargetOriginId:
+            Fn::Join: [ '', [ 'origin-', !Ref MusicLibraryApi, '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com' ] ]
+          PathPattern: '/api'
+          DefaultTTL: 60
+          MaxTTL: 3600
+          MinTTL: 60
+          ForwardedValues:
+            QueryString: true
+            Cookies:
+              Forward: none
           ViewerProtocolPolicy: redirect-to-https
   # DNS Record Set
   MusicArchiveDistributionDNSRecord:
