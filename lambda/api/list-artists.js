@@ -1,28 +1,14 @@
 'use strict';
 
-const { scanDB } = require('../common');
-
-const dbLibraryTable = process.env.DB_LIBRARY_TABLE;
-
-const dynamoParams = {
-  TableName: dbLibraryTable,
-  ProjectionExpression: 'artist, id'
-};
+const { listArtists } = require('../services');
 
 exports.handler = (event, context, callback) => {
   const response = {};
 
-  scanDB(dynamoParams)
-    .then(dbItems => {
+  listArtists()
+    .then(artists => {
       response.status = 'success';
-      response.artists = [];
-
-      dbItems.Items.forEach(dbItem => {
-        response.artists.push({
-          id: dbItem.id,
-          name: dbItem.artist
-        });
-      });
+      response.data = artists;
       callback(null, response);
     })
     .catch(err => {
