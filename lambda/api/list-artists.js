@@ -10,7 +10,24 @@ const dynamoParams = {
 };
 
 exports.handler = (event, context, callback) => {
+  const response = {};
+
   scanDB(dynamoParams)
-    .then(success => callback(null, success))
-    .catch(err => callback(err));
+    .then(dbItems => {
+      response.status = 'success';
+      response.artists = [];
+
+      dbItems.Items.forEach(dbItem => {
+        response.artists.push({
+          id: dbItem.id,
+          name: dbItem.artist
+        });
+      });
+      callback(null, response);
+    })
+    .catch(err => {
+      response.status = 'failed';
+      response.message = err;
+      callback(null, response);
+    });
 }

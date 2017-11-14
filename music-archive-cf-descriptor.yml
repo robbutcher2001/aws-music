@@ -242,6 +242,9 @@ Resources:
         Fn::GetAtt:
           - ApiLambdaRole
           - Arn
+      Environment:
+        Variables:
+          DB_LIBRARY_TABLE: !Ref DbLibraryTableStore
   ServeTrackLambdaFunction:
     DependsOn: ApiLambdaRole
     Type: AWS::Lambda::Function
