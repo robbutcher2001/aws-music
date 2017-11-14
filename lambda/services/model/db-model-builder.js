@@ -1,7 +1,7 @@
 'use strict';
 
 const uuid = require('uuid/v4');
-const { getS3Keys, getS3ObjectTags, putDocument } = require('./common');
+const { getS3Keys, getS3ObjectTags, putDocument } = require('../../common');
 
 const trackBucket = process.env.TRACK_BUCKET;
 const dbLibraryTable = process.env.DB_LIBRARY_TABLE;
