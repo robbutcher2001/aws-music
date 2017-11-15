@@ -316,7 +316,7 @@ Resources:
     DependsOn: ApiLambdaRole
     Type: AWS::Lambda::Function
     Properties:
-      Handler: lambda/api/list-artist-albums.handler
+      Handler: lambda/api/get-artist-albums.handler
       Runtime: nodejs6.10
       Code:
         S3Bucket: 'music-archive-source-code'
@@ -336,6 +336,33 @@ Resources:
       FunctionName:
         Fn::GetAtt:
           - GetArtistLambdaFunction
+          - Arn
+      SourceArn:
+        Fn::Join: [ ':', [ 'arn:aws:execute-api', !Ref 'AWS::Region', !Ref 'AWS::AccountId', '*' ] ]
+  GetAlbumLambdaFunction:
+    DependsOn: ApiLambdaRole
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: lambda/api/get-album-tracks.handler
+      Runtime: nodejs6.10
+      Code:
+        S3Bucket: 'music-archive-source-code'
+        S3Key: %{SourceCodeBucket}
+      Role:
+        Fn::GetAtt:
+          - ApiLambdaRole
+          - Arn
+      Environment:
+        Variables:
+          DB_LIBRARY_TABLE: !Ref DbLibraryTableStore
+  GetAlbumLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      FunctionName:
+        Fn::GetAtt:
+          - GetAlbumLambdaFunction
           - Arn
       SourceArn:
         Fn::Join: [ ':', [ 'arn:aws:execute-api', !Ref 'AWS::Region', !Ref 'AWS::AccountId', '*' ] ]
@@ -375,3 +402,4 @@ Resources:
       Variables:
         ListArtistsLambdaFunction: !Ref ListArtistsLambdaFunction
         GetArtistLambdaFunction: !Ref GetArtistLambdaFunction
+        GetAlbumLambdaFunction: !Ref GetAlbumLambdaFunction
