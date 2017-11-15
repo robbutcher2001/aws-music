@@ -1,6 +1,6 @@
-const listArtists = require('./list-artists-service');
+const artists = require('./artist-service');
 
 module.exports = Object.assign(
   {},
-  listArtists
+  artists
 );

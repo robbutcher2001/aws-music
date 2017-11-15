@@ -1,14 +1,17 @@
 'use strict';
 
-const { listArtistsService } = require('../services');
+const { getArtistService } = require('../services');
 
 exports.handler = (event, context, callback) => {
+  const artistId = event.params;
+  console.log(JSON.stringify(artistId));
+
   const response = {};
 
-  listArtistsService()
-    .then(artists => {
+  getArtistService('dd10bcc3-04f7-4930-bcbb-8056358b89fa')
+    .then(albums => {
       response.status = 'success';
-      response.data = artists;
+      response.data = albums;
       callback(null, response);
     })
     .catch(err => {

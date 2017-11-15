@@ -25,7 +25,19 @@ const scanDB = dynamoParams =>
     });
   });
 
+const queryDB = dynamoParams =>
+  new Promise((resolve, reject) => {
+    documentClient.query(dynamoParams, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+
 module.exports = {
   putDocument,
-  scanDB
+  scanDB,
+  queryDB
 };
