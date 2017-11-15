@@ -389,7 +389,7 @@ Resources:
       BodyS3Location:
         Bucket: 'music-archive-source-code'
         Key: %{SwaggerLocation}
-  MusicLibraryApiDeployment:
+  %{MusicLibraryApiDeployment}:
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref MusicLibraryApi
@@ -397,7 +397,7 @@ Resources:
     Type: AWS::ApiGateway::Stage
     Properties:
       RestApiId: !Ref MusicLibraryApi
-      DeploymentId: !Ref MusicLibraryApiDeployment
+      DeploymentId: !Ref %{MusicLibraryApiDeployment}
       StageName: !Ref Env
       Variables:
         ListArtistsLambdaFunction: !Ref ListArtistsLambdaFunction
