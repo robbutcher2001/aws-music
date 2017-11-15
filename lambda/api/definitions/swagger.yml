@@ -75,7 +75,7 @@ paths:
         type: "aws"
         requestTemplates:
           application/json: |
-            {"parameters": {"artistId": "$input.params('artistId')"}}
+            {"params": {"artistId": "$input.params('artistId')"}}
       parameters:
         - name: artistId
           in: path
