@@ -287,7 +287,7 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       RoleName:
-        Fn::Join: [ '-', [ 'api-lambda-role', !Ref Env ] ]
+        Fn::Join: [ '-', [ 'api-s3-lambda-role', !Ref Env ] ]
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
