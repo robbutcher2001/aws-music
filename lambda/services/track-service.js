@@ -3,7 +3,7 @@
 const uuid = require('uuid/v4');
 
 const { duplicateToAnotherBucket } = require('../common');
-const { getAlbumService } = require('./index');
+const { getAlbumService } = require('./album-service');
 
 const trackSourceBucket = process.env.TRACK_SOURCE_BUCKET;
 const serveTrackBucket = process.env.SERVE_TRACK_BUCKET;
