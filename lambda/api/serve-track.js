@@ -1,22 +1,23 @@
 'use strict';
-const AWS = require('aws-sdk');
-const dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+
+const { getTrackService } = require('../services');
 
 exports.handler = (event, context, callback) => {
-  var queryParams = {
-    ExpressionAttributeValues: {
-     ":a": {
-      S: "Leftfield"
-      }
-    },
-    KeyConditionExpression: "artist = :a",
-    ProjectionExpression: "albums",
-    TableName: "library-dev"
-  };
-  dynamodb.query(queryParams, function(err, data) {
-   if (err) callback(err); // an error occurred
-   else     callback(null, data);           // successful response
-  });
+  const response = {};
+
+  getTrackService(event.params.artistId, event.params.albumId, event.params.trackId)
+    .then(trackLocation => {
+      response.status = 'success';
+      response.data = {
+        location: trackLocation
+      };
+      callback(null, response);
+    })
+    .catch(err => {
+      response.status = 'failed';
+      response.message = err;
+      callback(null, response);
+    });
 
   //use this Lambda to look up the key of the track then create temp copy of object from library to temp bucket
   //http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#copyObject-property
@@ -25,16 +26,4 @@ exports.handler = (event, context, callback) => {
   //user will be able to download the file using the link they've got from the app only for one day
   //user will not be able to guess location of other files due to unique UUID filenames
   //protect this endpoint with IAM so user cannot generate URLs for all files in library without being logged in
-}
-
-
-function getArtists() {
-  var params = {
-  ProjectionExpression: "artist, id",
-    TableName: "library-dev"
-   };
-dynamodb.scan(params, function(err, data) {
- if (err) callback(err); // an error occurred
- else     callback(null, data);           // successful response
-});
 }

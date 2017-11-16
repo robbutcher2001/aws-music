@@ -421,6 +421,23 @@ Resources:
         Fn::GetAtt:
           - ApiLambdaRole
           - Arn
+      Environment:
+        Variables:
+          DB_LIBRARY_TABLE: !Ref DbLibraryTableStore
+          TRACK_SOURCE_BUCKET: !Ref MusicArchiveFileLibraryBucket
+          SERVE_TRACK_BUCKET: !Ref ServeMusicFileBucket
+          SERVE_TRACK_PREFIX: !Ref ServeTrackBucketFilePrefix
+  ServeTrackLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      FunctionName:
+        Fn::GetAtt:
+          - ServeTrackLambdaFunction
+          - Arn
+      SourceArn:
+        Fn::Join: [ ':', [ 'arn:aws:execute-api', !Ref 'AWS::Region', !Ref 'AWS::AccountId', '*' ] ]
   # Music Library API Gateway Definition
   MusicLibraryApi:
     Type: AWS::ApiGateway::RestApi
@@ -445,3 +462,4 @@ Resources:
         ListArtistsLambdaFunction: !Ref ListArtistsLambdaFunction
         GetArtistLambdaFunction: !Ref GetArtistLambdaFunction
         GetAlbumLambdaFunction: !Ref GetAlbumLambdaFunction
+        ServeTrackLambdaFunction: !Ref ServeTrackLambdaFunction

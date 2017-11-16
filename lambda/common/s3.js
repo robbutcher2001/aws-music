@@ -50,7 +50,20 @@ const getS3ObjectTags = tagParams =>
     });
   });
 
+const duplicateToAnotherBucket = copyParams =>
+  new Promise((resolve, reject) => {
+    s3.copyObject(copyParams, function(err, result) {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(result);
+      }
+    });
+  });
+
 module.exports = {
   getS3Keys,
-  getS3ObjectTags
+  getS3ObjectTags,
+  duplicateToAnotherBucket
 };

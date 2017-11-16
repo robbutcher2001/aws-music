@@ -54,6 +54,28 @@ const getArtistService = (artistId) =>
       .catch(err => reject(err));
   });
 
+// Not used yet or exported
+const searchArtistsService = (searchTerm) =>
+  new Promise((resolve, reject) => {
+    const dynamoParams = {
+      TableName: dbLibraryTable,
+      IndexName: 'name-index',
+      ExpressionAttributeValues: {
+        ':artistSearch': searchTerm
+      },
+      KeyConditionExpression: 'name = :artistSearch',
+      ProjectionExpression: 'albums'
+    };
+
+    queryDB(dynamoParams)
+      .then(dbItems => {
+        const data = [];
+        //TODO
+        resolve(data);
+      })
+      .catch(err => reject(err));
+  });
+
 module.exports = {
   listArtistsService,
   getArtistService
