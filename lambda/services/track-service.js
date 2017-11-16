@@ -13,17 +13,17 @@ const getTrackService = (artistId, albumId, trackId) =>
   new Promise((resolve, reject) => {
     getAlbumService(artistId, albumId)
       .then(tracks => {
-        const temporaryTrackId = uuid();
+        const temporaryTrackLocation = `${serveTrackPrefix}/${uuid()}`;
         const track = tracks.find((track, index, originalArray) => track.id === trackId);
 
         const copyParams = {
           Bucket: serveTrackBucket,
           CopySource: `/${trackSourceBucket}/${track.key}`,
-          Key: temporaryTrackId
+          Key: temporaryTrackLocation
         };
 
         duplicateToAnotherBucket(copyParams)
-          .then(() => resolve(`/${serveTrackPrefix}/${temporaryTrackId}`))
+          .then(() => resolve(temporaryTrackLocation))
           .catch(err => reject(err));
       })
       .catch(err => reject(err));
