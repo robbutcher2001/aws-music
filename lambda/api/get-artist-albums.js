@@ -1,14 +1,14 @@
 'use strict';
 
-const { listArtistsService } = require('../services');
+const { getArtistService } = require('../services');
 
 exports.handler = (event, context, callback) => {
   const response = {};
 
-  listArtistsService()
-    .then(artists => {
+  getArtistService(event.params.artistId)
+    .then(albums => {
       response.status = 'success';
-      response.data = artists;
+      response.data = albums;
       callback(null, response);
     })
     .catch(err => {

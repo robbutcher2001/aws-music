@@ -1,6 +1,10 @@
-const listArtists = require('./list-artists-service');
+const artists = require('./artist-service');
+const albums = require('./album-service');
+const tracks = require('./track-service');
 
 module.exports = Object.assign(
   {},
-  listArtists
+  artists,
+  albums,
+  tracks
 );

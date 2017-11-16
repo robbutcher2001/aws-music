@@ -48,14 +48,8 @@ const buildDbModelItems = tracksFlatList => {
           const album = {id: uuid(), name: albumItem.album, tracks: []};
           artist.albums.push(album);
           getAlbumTracks(tracksFlatList, artistItem.artist, albumItem.album).forEach(trackItem => {
-            album.tracks.push({
-                id: uuid(),
-                key: trackItem.key,
-                title: trackItem.title,
-                year: trackItem.year,
-                genre: trackItem.genre,
-                comment: trackItem.comment
-            });
+            trackItem.id = uuid();
+            album.tracks.push(trackItem);
           });
         }
         else {

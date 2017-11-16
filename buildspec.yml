@@ -14,6 +14,7 @@ phases:
       - aws s3 cp lambda-source-${timestamp}.zip s3://${SourceCodeBucket}
       - sed -ie "s/%{SwaggerLocation}/swagger-${timestamp}.yml/g" music-archive-cf-descriptor.yml
       - sed -ie "s/%{SourceCodeBucket}/lambda-source-${timestamp}.zip/g" music-archive-cf-descriptor.yml
+      - sed -ie "s/%{MusicLibraryApiDeployment}/MusicLibraryApiDeployment${timestamp}/g" music-archive-cf-descriptor.yml
       - aws s3 cp music-archive-cf-descriptor.yml s3://${SourceCodeBucket}
 artifacts:
   files:
