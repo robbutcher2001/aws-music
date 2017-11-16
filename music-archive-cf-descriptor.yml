@@ -83,6 +83,27 @@ Resources:
           - Id: PurgeStaleTracks
             Status: Enabled
             ExpirationInDays: 1
+  ServeMusicFileBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ServeMusicFileBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - Fn::Join: [ ' ', [ 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity', !Ref S3OriginAccessIdentity ] ]
+            Action:
+              - 's3:GetObject'
+            Resource:
+              Fn::Join: [ '', [ !GetAtt ServeMusicFileBucket.Arn, '/*' ] ]
+          - Effect: Allow
+            Principal:
+              AWS:
+                - Fn::Join: [ ' ', [ 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity', !Ref S3OriginAccessIdentity ] ]
+            Action:
+              - 's3:ListBucket'
+            Resource: !GetAtt ServeMusicFileBucket.Arn
   # CloudFront distro to sit in front of bucket and reduce outbound cost
   MusicArchiveDistribution:
     Type: AWS::CloudFront::Distribution
