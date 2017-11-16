@@ -174,7 +174,7 @@ paths:
           application/json: "{\"statusCode\": 200}"
         type: "mock"
   # Get track
-  /api/artist/{artistId}/album/{albumId}/track/${trackId}:
+  /api/artist/{artistId}/album/{albumId}/track/{trackId}:
     get:
       produces:
       - "application/json"
