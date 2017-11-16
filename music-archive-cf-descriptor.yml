@@ -281,6 +281,25 @@ Resources:
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
         - 'arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess'
+  ApiS3LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Join: [ '-', [ 'api-lambda-role', !Ref Env ] ]
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - 'arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
   # Lambda Function Definitions for Model
   TagReaderFunction:
     DependsOn: TagReaderRole
@@ -409,7 +428,7 @@ Resources:
       SourceArn:
         Fn::Join: [ ':', [ 'arn:aws:execute-api', !Ref 'AWS::Region', !Ref 'AWS::AccountId', '*' ] ]
   ServeTrackLambdaFunction:
-    DependsOn: ApiLambdaRole
+    DependsOn: ApiS3LambdaRole
     Type: AWS::Lambda::Function
     Properties:
       Handler: lambda/api/serve-track.handler
@@ -419,7 +438,7 @@ Resources:
         S3Key: %{SourceCodeBucket}
       Role:
         Fn::GetAtt:
-          - ApiLambdaRole
+          - ApiS3LambdaRole
           - Arn
       Environment:
         Variables:
