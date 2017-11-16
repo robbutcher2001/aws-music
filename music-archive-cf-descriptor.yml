@@ -105,6 +105,12 @@ Resources:
           S3OriginConfig:
             OriginAccessIdentity:
               Fn::Join: [ '', [ 'origin-access-identity/cloudfront/', !Ref S3OriginAccessIdentity ] ]
+        - DomainName: !GetAtt ServeMusicFileBucket.DomainName
+          Id:
+            Fn::Join: [ '-', [ 'origin', !GetAtt ServeMusicFileBucket.DomainName ] ]
+          S3OriginConfig:
+            OriginAccessIdentity:
+              Fn::Join: [ '', [ 'origin-access-identity/cloudfront/', !Ref S3OriginAccessIdentity ] ]
         - DomainName:
             Fn::Join: [ '', [ !Ref MusicLibraryApi, '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com' ] ]
           Id:
@@ -143,6 +149,21 @@ Resources:
           MinTTL: 60
           ForwardedValues:
             QueryString: true
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+        - AllowedMethods:
+          - GET
+          - HEAD
+          - OPTIONS
+          TargetOriginId:
+            Fn::Join: [ '-', [ 'origin', !GetAtt ServeMusicFileBucket.DomainName ] ]
+          PathPattern: '/raw/*'
+          DefaultTTL: 60
+          MaxTTL: 3600
+          MinTTL: 60
+          ForwardedValues:
+            QueryString: false
             Cookies:
               Forward: none
           ViewerProtocolPolicy: redirect-to-https
