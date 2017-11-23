@@ -9,7 +9,7 @@ fetch('https://test-music.robertbutcher.co.uk/api/artists')
         outerDiv.className = 'row 0%';
         mnt.appendChild(outerDiv);
 
-        artistsBlock.forEach(artistsBlock => {
+        artistsBlock.forEach(artist => {
           const div = document.createElement('div');
           div.className = '3u 12u(mobile)';
           div.innerHTML = artist.name;
@@ -28,4 +28,8 @@ const artistBlockSplit = artists => {
   }
 
   return artistsBlocks;
+};
+
+const createArtistLink = artist => {
+  const a = document.createElement('a');
 };
