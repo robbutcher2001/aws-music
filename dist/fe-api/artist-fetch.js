@@ -1,35 +1,74 @@
-fetch('/api/artists')
-  .then(response => {
-    response.json().then(json => {
-      const mnt = document.getElementById('mnt');
-      const artistsBlocks = artistBlockSplit(json.data);
+document.addEventListener('DOMContentLoaded', () => {
+  const path = window.location.pathname.split('/');
 
-      artistsBlocks.forEach(artistsBlock => {
-        const outerDiv = document.createElement('div');
-        outerDiv.className = 'row 0%';
-        mnt.appendChild(outerDiv);
-
-        artistsBlock.forEach(artist => {
-          const div = document.createElement('div');
-          div.className = '3u 12u(mobile)';
-          div.innerHTML = artist.name;
-          outerDiv.appendChild(div);
-        });
-      });
-    });
-  })
-  .catch(err => console.error(err));
-
-const artistBlockSplit = artists => {
-  const artistsBlocks = [], size = 4;
-
-  while (artists.length > 0) {
-    artistsBlocks.push(artists.splice(0, size));
+  if (path.length > 2) {
+    if (path[1] === 'artist') {
+      const artistId = path[2];
+      listAlbums(artistId);
+    }
   }
+  else {
+    listArtists();
+  }
+});
 
-  return artistsBlocks;
+const listAlbums = artistId => {
+  const mnt = document.getElementById('mnt');
+
+  fetch(`/api/artist/${artistId}/albums`)
+    .then(response => {
+      renderResponse(response, mnt);
+    })
+    .catch(err => {
+      mnt.innerHTML(err);
+    });
 };
 
-const createArtistLink = artist => {
+const listArtists = () => {
+  const mnt = document.getElementById('mnt');
+
+  fetch('/api/artists')
+    .then(response => {
+      renderResponse(response, mnt);
+    })
+    .catch(err => {
+      mnt.innerHTML(err);
+    });
+};
+
+const renderResponse = (response, mnt) => {
+  response.json().then(json => {
+    const responseBlocks = responseBlockSplit(json.data);
+
+    responseBlocks.forEach(responseBlock => {
+      const outerDiv = document.createElement('div');
+      outerDiv.className = 'row 0%';
+      mnt.appendChild(outerDiv);
+
+      responseBlock.forEach(block => {
+        const div = document.createElement('div');
+        div.className = '3u 6u(mobile)';
+        div.appendChild(createLink(block));
+        outerDiv.appendChild(div);
+      });
+    });
+  });
+};
+
+const responseBlockSplit = responseBlock => {
+  const responseBlocks = [], size = 4;
+
+  while (responseBlock.length > 0) {
+    responseBlocks.push(responseBlock.splice(0, size));
+  }
+
+  return responseBlocks;
+};
+
+const createLink = block => {
   const a = document.createElement('a');
+  a.href = `/artist/${block.id}`;
+  a.innerHTML = block.name;
+
+  return a;
 };
