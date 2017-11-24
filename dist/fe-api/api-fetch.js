@@ -28,7 +28,7 @@ const getTrack = (ctaButton, artistId, albumId, trackId) => {
   fetch(`/api/artist/${artistId}/album/${albumId}/track/${trackId}`)
     .then(response => {
       response.json().then(json => {
-        ctaButton.innerHTML = 'Play Below';
+        ctaButton.innerHTML = 'Playing';
         const audio = document.createElement('audio');
         audio.setAttribute('autoPlay', '');
         audio.setAttribute('controls', '');
