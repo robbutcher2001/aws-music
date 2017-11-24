@@ -302,6 +302,41 @@ Resources:
         - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
         - 'arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess'
         - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+  # Lambda Function Definitions for Deployment
+  LambdaStaticDeploymentRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Join: [ '-', [ 'music-archive-s3-static-deployment-role', !Ref Env ] ]
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        - 'arn:aws:iam::aws:policy/AWSCodePipelineFullAccess'
+  StaticS3DeploymentFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName:
+        Fn::Join: [ '-', [ 'MusicArchive', 'StaticS3DeployerFunction', !Ref Env ] ]
+      Handler: lambda/deployment/static-s3-deployer.handler
+      Runtime: nodejs6.10
+      Code:
+        S3Bucket: 'music-archive-source-code'
+        S3Key: %{SourceCodeBucket}
+      Role:
+        Fn::GetAtt:
+          - LambdaStaticDeploymentRole
+          - Arn
+      Timeout: 30
   # Lambda Function Definitions for Model
   TagReaderFunction:
     DependsOn: TagReaderRole
