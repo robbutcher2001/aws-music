@@ -1,4 +1,4 @@
-fetch('https://test-music.robertbutcher.co.uk/api/artists')
+fetch('/api/artists')
   .then(response => {
     response.json().then(json => {
       const mnt = document.getElementById('mnt');
