@@ -1,6 +1,7 @@
 'use strict';
 
 const { listArtistsService } = require('../services');
+const { sort } = require('../common');
 
 exports.handler = (event, context, callback) => {
   const response = {};
@@ -8,7 +9,7 @@ exports.handler = (event, context, callback) => {
   listArtistsService()
     .then(artists => {
       response.status = 'success';
-      response.data = artists;
+      response.data = sort(artists, 'name');
       callback(null, response);
     })
     .catch(err => {
