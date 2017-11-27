@@ -32,6 +32,11 @@ const getTrack = (ctaButton, artistId, albumId, trackId) => {
         const audio = document.createElement('audio');
         audio.setAttribute('autoPlay', '');
         audio.setAttribute('controls', '');
+        audio.setAttribute('preload', 'auto');
+        audio.addEventListener('ended', () => {
+          audio.currentTime = 0;
+          audio.play();
+        });
 
         const source = document.createElement('source');
         source.setAttribute('src', `/${json.data.location}`);
