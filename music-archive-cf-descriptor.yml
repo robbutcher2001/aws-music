@@ -481,6 +481,7 @@ Resources:
         Fn::GetAtt:
           - ApiS3LambdaRole
           - Arn
+      Timeout: 30
       Environment:
         Variables:
           DB_LIBRARY_TABLE: !Ref DbLibraryTableStore
