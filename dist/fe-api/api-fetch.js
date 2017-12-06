@@ -33,6 +33,7 @@ const getTrack = (ctaButton, artistId, albumId, trackId) => {
         audio.setAttribute('autoPlay', '');
         audio.setAttribute('controls', '');
         audio.setAttribute('preload', 'auto');
+        audio.setAttribute('title', 'iOS test title');
         audio.addEventListener('ended', () => {
           audio.currentTime = 0;
           audio.play();
