@@ -20,7 +20,76 @@ document.addEventListener('DOMContentLoaded', () => {
   else {
     listArtists(ctaButton);
   }
+
+  //temp playlist
+  const ctaPlaylist = document.getElementById('cta-playlist');
+  ctaPlaylist.addEventListener('click', () => {
+    getTrackLocations()
+      .then(trackLocations => {
+        console.log(`what is this? ${JSON.stringify(trackLocations)}`);
+        const mnt = document.getElementById('mnt');
+        ctaButton.innerHTML = 'Playing test playlist';
+        const audio = document.createElement('audio');
+        audio.setAttribute('autoPlay', '');
+        audio.setAttribute('controls', '');
+        audio.setAttribute('preload', 'auto');
+        mnt.appendChild(audio);
+        console.log(`Got tracks ${JSON.stringify(trackLocations)}`);
+        playNextTrack(audio, trackLocations, 0);
+      })
+      .catch(err => {
+        mnt.innerHTML = err;
+      });
+  });
 });
+
+const getTrackLocations = () =>
+  new Promise((resolve, reject) => {
+    const playlistTracks = [
+      '/api/artist/585ac3ec-5877-4b26-8234-fc1f8b9576ba/album/03eb1db7-4f54-4f6d-88ad-89a1912f1b20/track/8c875913-f99f-4e92-be52-aaa951f881b8',
+      '/api/artist/585ac3ec-5877-4b26-8234-fc1f8b9576ba/album/03eb1db7-4f54-4f6d-88ad-89a1912f1b20/track/e19220c1-4241-4623-9b1d-8986aa5aaefc',
+      '/api/artist/585ac3ec-5877-4b26-8234-fc1f8b9576ba/album/03eb1db7-4f54-4f6d-88ad-89a1912f1b20/track/b4683722-f928-4a68-bace-40a1eccae36f',
+      '/api/artist/585ac3ec-5877-4b26-8234-fc1f8b9576ba/album/03eb1db7-4f54-4f6d-88ad-89a1912f1b20/track/c061b105-7276-4a42-a7f9-7b66ee8ec50a'
+    ];
+
+    const playlistTrackLocations = [];
+
+    playlistTracks.forEach(playlistTrack => {
+      playlistTrackLocations.push(fetch(playlistTrack));
+    });
+
+    Promise.all(playlistTrackLocations)
+      .then(responses => {
+        const locations = [];
+        const jsonResponses = [];
+        responses.forEach(response => {
+          jsonResponses.push(response.json());
+        });
+
+        Promise.all(jsonResponses)
+          .then(everyJson => {
+            everyJson.forEach(json => {
+              locations.push(`/${json.data.location}`);
+              console.log(`and here? /${locations}`);
+              resolve(locations);
+            });
+          })
+          .catch(err => reject(err));
+      })
+      .catch(err => reject(err));
+  });
+
+const playNextTrack = (audioTag, trackLocations, currentTrackCount) => {
+  console.log(`Playing ${trackLocations[currentTrackCount]}`);
+  audioTag.src = trackLocations[currentTrackCount];
+  audioTag.setAttribute('title', 'iOS test title');
+  audioTag.load();
+  audioTag.play();
+
+  audioTag.addEventListener('ended', () => {
+    playNextTrack(audioTag, trackLocations, ++currentTrackCount);
+  });
+};
 
 const getTrack = (ctaButton, artistId, albumId, trackId) => {
   const mnt = document.getElementById('mnt');
