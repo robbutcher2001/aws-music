@@ -163,6 +163,7 @@ Resources:
             Cookies:
               Forward: all
           ViewerProtocolPolicy: redirect-to-https
+          Compress: true
         CacheBehaviors:
         - AllowedMethods:
           - GET
@@ -194,6 +195,7 @@ Resources:
             Cookies:
               Forward: none
           ViewerProtocolPolicy: redirect-to-https
+          Compress: true
   # DNS Record Set
   MusicArchiveDistributionDNSRecord:
     Type: AWS::Route53::RecordSet
