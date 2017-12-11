@@ -12,8 +12,6 @@ const cleanTag = tag => {
 
 const extractAndUploadAlbumArt = (albumArtTag, albumArtName, targetBucket) =>
   new Promise((resolve, reject) => {
-    let resolveMessage = '-';
-
     if (typeof albumArtTag !== 'undefined') {
       const albumArtLocation = `album-art/${albumArtName}`;
       const headObjectParams = {
@@ -31,24 +29,22 @@ const extractAndUploadAlbumArt = (albumArtTag, albumArtName, targetBucket) =>
 
           s3.putObject(putObjectParams, function(err, data) {
             if (err) {
-              return reject(err);
+              reject('-');
             }
             else {
-              resolveMessage = albumArtLocation;
+              resolve(albumArtLocation);
             }
           });
         }
         else if (err) {
-          return reject(err);
+          reject('-');
         }
         else {
           console.info(`Album art already exists at location [${albumArtLocation}]`);
-          resolveMessage = albumArtLocation;
+          resolve(albumArtLocation);
         }
       });
     }
-
-    resolve(resolveMessage);
   });
 
 exports.handler = (event, context, callback) => {
