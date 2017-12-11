@@ -208,11 +208,14 @@ const createAlbumLink = (artistId, album) => {
   const a = document.createElement('a');
   a.href = `/artist/${artistId}/album/${album.id}`;
   a.className = 'image fit';
-  a.innerHTML = album.name;
 
   const img = document.createElement('img');
   img.src = `/${album.albumart}`;
   a.appendChild(img);
+
+  const div = document.createElement('div');
+  div.innerHTML = album.name;
+  a.appendChild(div);
 
   return a;
 };
