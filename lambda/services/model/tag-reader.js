@@ -23,7 +23,7 @@ const extractAndUploadAlbumArt = (albumArtTag, albumArtName, targetBucket) =>
 
       s3.headObject(headObjectParams, function(err, data) {
         if (err && err.code === 'NotFound') {
-          console.debug(`Album art doesn't exist so creating new one`);
+          console.info(`Album art doesn't exist so creating new one`);
           const putObjectParams = Object.assign({}, headObjectParams, {
             Body: Buffer.from(albumArtTag.data),
             ContentType: albumArtTag.format
