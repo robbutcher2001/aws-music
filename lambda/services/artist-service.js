@@ -18,7 +18,8 @@ const listArtistsService = () =>
         dbItems.Items.forEach(dbItem => {
           data.push({
             id: dbItem.id,
-            name: dbItem.artist
+            name: dbItem.artist,
+            albumart: dbItem.albumart
           });
         });
         resolve(data);
@@ -45,7 +46,8 @@ const getArtistService = (artistId) =>
           dbItem.albums.forEach(album => {
             data.push({
               id: album.id,
-              name: album.name
+              name: album.name,
+              albumart: album.albumart
             });
           });
         });
