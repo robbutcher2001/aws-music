@@ -28,7 +28,8 @@ const extractAndUploadAlbumArt = (albumArtTag, albumArtName, targetBucket) =>
             Body: Buffer.from(albumArtTag.data),
             ContentType: albumArtTag.format
           });
-          s3.putObject(params, function(err, data) {
+
+          s3.putObject(putObjectParams, function(err, data) {
             if (err) {
               return reject(err);
             }
