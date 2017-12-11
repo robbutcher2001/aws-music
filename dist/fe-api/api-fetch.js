@@ -192,11 +192,14 @@ const createArtistLink = artist => {
   const a = document.createElement('a');
   a.href = `/artist/${artist.id}`;
   a.className = 'image fit';
-  a.innerHTML = artist.name;
 
   const img = document.createElement('img');
   img.src = `/${artist.albumart}`;
   a.appendChild(img);
+
+  const div = document.createElement('div');
+  div.innerHTML = artist.name;
+  a.appendChild(div);
 
   return a;
 };
