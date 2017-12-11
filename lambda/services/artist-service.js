@@ -8,7 +8,7 @@ const listArtistsService = () =>
   new Promise((resolve, reject) => {
     const dynamoParams = {
       TableName: DB_LIBRARY_TABLE,
-      ProjectionExpression: 'id, artist'
+      ProjectionExpression: 'id, artist, albumart'
     };
 
     scanDB(dynamoParams)

@@ -195,7 +195,7 @@ const createArtistLink = artist => {
   a.innerHTML = artist.name;
 
   const img = document.createElement('img');
-  img.src = artist.albumart;
+  img.src = `/${artist.albumart}`;
   a.appendChild(img);
 
   return a;
@@ -208,7 +208,7 @@ const createAlbumLink = (artistId, album) => {
   a.innerHTML = album.name;
 
   const img = document.createElement('img');
-  img.src = album.albumart;
+  img.src = `/${album.albumart}`;
   a.appendChild(img);
 
   return a;

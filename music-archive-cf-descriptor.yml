@@ -412,6 +412,7 @@ Resources:
       Environment:
         Variables:
           ALBUM_ART_BUCKET: !Ref AlbumArtBucket
+          ALBUM_ART_BUCKET_PREFIX: !Ref AlbumArtBucketFilePrefix
   TagReaderLambdaPermission:
     DependsOn: TagReaderFunction
     Type: AWS::Lambda::Permission

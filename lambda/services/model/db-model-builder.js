@@ -38,7 +38,6 @@ const getAlbumTracks = (tracksFlatList, artist, album) =>
 
 const buildDbModelItems = tracksFlatList => {
   const items = [];
-  let albumArtAdded = false;
 
   getUniqueArtists(tracksFlatList).forEach(artistItem => {
     if (typeof artistItem.artist !== 'undefined') {
@@ -48,6 +47,7 @@ const buildDbModelItems = tracksFlatList => {
         if (typeof albumItem.album !== 'undefined') {
           const album = {id: uuid(), name: albumItem.album, tracks: []};
           artist.albums.push(album);
+          let albumArtAdded = false;
           getAlbumTracks(tracksFlatList, artistItem.artist, albumItem.album).forEach(trackItem => {
             trackItem.id = uuid();
             album.tracks.push(trackItem);

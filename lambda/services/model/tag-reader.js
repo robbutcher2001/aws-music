@@ -6,6 +6,7 @@ const fs = require('fs');
 const tagReader = require('jsmediatags');
 
 const ALBUM_ART_BUCKET = process.env.ALBUM_ART_BUCKET;
+const ALBUM_ART_BUCKET_PREFIX = process.env.ALBUM_ART_BUCKET_PREFIX;
 
 //Strip out everything but AWS permitted and alphanumeric characters
 const cleanTag = tag => {
@@ -15,7 +16,7 @@ const cleanTag = tag => {
 const extractAndUploadAlbumArt = (albumArtTag, albumArtName, targetBucket) =>
   new Promise((resolve, reject) => {
     if (typeof albumArtTag !== 'undefined') {
-      const albumArtLocation = `album-art/${albumArtName}`;
+      const albumArtLocation = `${ALBUM_ART_BUCKET_PREFIX}/${albumArtName}`;
       const headObjectParams = {
         Bucket: targetBucket,
         Key: albumArtLocation
