@@ -4,6 +4,7 @@
     "PublicURL": "music.robertbutcher.co.uk",
     "HostedZoneId": "Z36L4CDWNLF2IB",
     "DbLibraryTableStore": "library",
-    "ServeTrackBucketFilePrefix": "raw"
+    "ServeTrackBucketFilePrefix": "raw",
+    "AlbumArtBucketFilePrefix": "album-art"
   }
 }

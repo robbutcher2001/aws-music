@@ -5,20 +5,20 @@ const uuid = require('uuid/v4');
 const { duplicateToAnotherBucket } = require('../common');
 const { getAlbumService } = require('./album-service');
 
-const trackSourceBucket = process.env.TRACK_SOURCE_BUCKET;
-const serveTrackBucket = process.env.SERVE_TRACK_BUCKET;
-const serveTrackPrefix = process.env.SERVE_TRACK_PREFIX;
+const TRACK_SOURCE_BUCKET = process.env.TRACK_SOURCE_BUCKET;
+const SERVE_TRACK_BUCKET = process.env.SERVE_TRACK_BUCKET;
+const SERVE_TRACK_PREFIX = process.env.SERVE_TRACK_PREFIX;
 
 const getTrackService = (artistId, albumId, trackId) =>
   new Promise((resolve, reject) => {
     getAlbumService(artistId, albumId)
       .then(tracks => {
-        const temporaryTrackLocation = `${serveTrackPrefix}/${uuid()}`;
+        const temporaryTrackLocation = `${SERVE_TRACK_PREFIX}/${uuid()}`;
         const track = tracks.find((track, index, originalArray) => track.id === trackId);
 
         const copyParams = {
-          Bucket: serveTrackBucket,
-          CopySource: `/${trackSourceBucket}/${track.key}`,
+          Bucket: SERVE_TRACK_BUCKET,
+          CopySource: `/${TRACK_SOURCE_BUCKET}/${track.key}`,
           Key: temporaryTrackLocation
         };
 

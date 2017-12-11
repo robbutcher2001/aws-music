@@ -5,6 +5,8 @@ const s3 = new AWS.S3({apiVersion: '2006-03-01'});
 const fs = require('fs');
 const tagReader = require('jsmediatags');
 
+const ALBUM_ART_BUCKET = process.env.ALBUM_ART_BUCKET;
+
 //Strip out everything but AWS permitted and alphanumeric characters
 const cleanTag = tag => {
   return typeof tag !== 'undefined' ? tag.replace(/[^a-zA-Z0-9+-=._:/\ ]/g, '') : '';
@@ -93,9 +95,9 @@ exports.handler = (event, context, callback) => {
 
           const albumArtName = artist.toLowerCase().concat('-', album.toLowerCase()).replace(/\s/g, '-');
 
-          extractAndUploadAlbumArt(tags.tags.picture, albumArtName, 'rob-dump-place')
+          extractAndUploadAlbumArt(tags.tags.picture, albumArtName, ALBUM_ART_BUCKET)
             .then(albumArtLocation => {
-              fileTags.push({ Key: 'album-art', Value: albumArtLocation });
+              fileTags.push({ Key: 'albumart', Value: albumArtLocation });
 
               s3.putObjectTagging(uploadedTrack, function(err, data) {
                 if (err) {

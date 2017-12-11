@@ -2,7 +2,7 @@
 
 const { queryDB } = require('../common');
 
-const dbLibraryTable = process.env.DB_LIBRARY_TABLE;
+const DB_LIBRARY_TABLE = process.env.DB_LIBRARY_TABLE;
 
 const findAlbum = (albums, albumId) => {
   return albums.find((album, index, originalArray) => {
@@ -13,7 +13,7 @@ const findAlbum = (albums, albumId) => {
 const getAlbumService = (artistId, albumId) =>
   new Promise((resolve, reject) => {
     const dynamoParams = {
-      TableName: dbLibraryTable,
+      TableName: DB_LIBRARY_TABLE,
       ExpressionAttributeValues: {
         ':id': artistId
       },
