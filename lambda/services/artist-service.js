@@ -2,13 +2,13 @@
 
 const { scanDB, queryDB } = require('../common');
 
-const dbLibraryTable = process.env.DB_LIBRARY_TABLE;
+const DB_LIBRARY_TABLE = process.env.DB_LIBRARY_TABLE;
 
 const listArtistsService = () =>
   new Promise((resolve, reject) => {
     const dynamoParams = {
-      TableName: dbLibraryTable,
-      ProjectionExpression: 'id, artist'
+      TableName: DB_LIBRARY_TABLE,
+      ProjectionExpression: 'id, artist, albumart'
     };
 
     scanDB(dynamoParams)
@@ -18,7 +18,8 @@ const listArtistsService = () =>
         dbItems.Items.forEach(dbItem => {
           data.push({
             id: dbItem.id,
-            name: dbItem.artist
+            name: dbItem.artist,
+            albumart: dbItem.albumart
           });
         });
         resolve(data);
@@ -29,7 +30,7 @@ const listArtistsService = () =>
 const getArtistService = (artistId) =>
   new Promise((resolve, reject) => {
     const dynamoParams = {
-      TableName: dbLibraryTable,
+      TableName: DB_LIBRARY_TABLE,
       ExpressionAttributeValues: {
         ':id': artistId
       },
@@ -45,7 +46,8 @@ const getArtistService = (artistId) =>
           dbItem.albums.forEach(album => {
             data.push({
               id: album.id,
-              name: album.name
+              name: album.name,
+              albumart: album.albumart
             });
           });
         });
@@ -58,7 +60,7 @@ const getArtistService = (artistId) =>
 const searchArtistsService = (searchTerm) =>
   new Promise((resolve, reject) => {
     const dynamoParams = {
-      TableName: dbLibraryTable,
+      TableName: DB_LIBRARY_TABLE,
       IndexName: 'name-index',
       ExpressionAttributeValues: {
         ':artistSearch': searchTerm

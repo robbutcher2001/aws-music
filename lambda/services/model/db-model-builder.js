@@ -3,13 +3,13 @@
 const uuid = require('uuid/v4');
 const { getS3Keys, getS3ObjectTags, putDocument } = require('../../common');
 
-const trackBucket = process.env.TRACK_BUCKET;
-const dbLibraryTable = process.env.DB_LIBRARY_TABLE;
+const TRACK_BUCKET = process.env.TRACK_BUCKET;
+const DB_LIBRARY_TABLE = process.env.DB_LIBRARY_TABLE;
 
 const createTrack = trackKey =>
   new Promise((resolve, reject) => {
     const track = trackKey;
-    getS3ObjectTags({Bucket: trackBucket, Key: track.key})
+    getS3ObjectTags({Bucket: TRACK_BUCKET, Key: track.key})
       .then(trackTags => {
         trackTags.TagSet.forEach(trackTag => {
           track[`${trackTag.Key}`] = (trackTag.Value === '' ? '-' : trackTag.Value);
@@ -47,9 +47,16 @@ const buildDbModelItems = tracksFlatList => {
         if (typeof albumItem.album !== 'undefined') {
           const album = {id: uuid(), name: albumItem.album, tracks: []};
           artist.albums.push(album);
+          let albumArtAdded = false;
           getAlbumTracks(tracksFlatList, artistItem.artist, albumItem.album).forEach(trackItem => {
             trackItem.id = uuid();
             album.tracks.push(trackItem);
+
+            if (trackItem.albumart !== '-' && !albumArtAdded) {
+              artist.albumart = trackItem.albumart;
+              album.albumart = trackItem.albumart;
+              albumArtAdded = true;
+            }
           });
         }
         else {
@@ -66,7 +73,7 @@ const buildDbModelItems = tracksFlatList => {
 };
 
 exports.handler = (event, context, callback) => {
-  getS3Keys({Bucket: trackBucket})
+  getS3Keys({Bucket: TRACK_BUCKET})
     .then(trackKeys => {
 
       const trackPromises = [];
@@ -78,7 +85,7 @@ exports.handler = (event, context, callback) => {
         .then(tracksFlatList => {
           const itemPromises = [];
           buildDbModelItems(tracksFlatList).forEach(item => {
-            itemPromises.push(putDocument({TableName: dbLibraryTable, Item: item}));
+            itemPromises.push(putDocument({TableName: DB_LIBRARY_TABLE, Item: item}));
           });
           Promise.all(itemPromises)
             .then(success => callback(null, `Artists [${itemPromises.length}] successfully added to library`))

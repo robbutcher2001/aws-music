@@ -15,6 +15,8 @@ Parameters:
     Type: String
   ServeTrackBucketFilePrefix:
     Type: String
+  AlbumArtBucketFilePrefix:
+    Type: String
 Conditions:
   CreateProdResources: !Equals [ !Ref Env, 'prod' ]
 Resources:
@@ -73,7 +75,35 @@ Resources:
                 Rules:
                   - Name: suffix
                     Value: m4a
-  # S3 Music File Bucket
+  # S3 Album Art Bucket
+  AlbumArtBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      BucketName:
+        Fn::Join: [ '-', [ 'music-archive-album-art', !Ref Env ] ]
+  AlbumArtBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref AlbumArtBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - Fn::Join: [ ' ', [ 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity', !Ref S3OriginAccessIdentity ] ]
+            Action:
+              - 's3:GetObject'
+            Resource:
+              Fn::Join: [ '', [ !GetAtt AlbumArtBucket.Arn, '/*' ] ]
+          - Effect: Allow
+            Principal:
+              AWS:
+                - Fn::Join: [ ' ', [ 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity', !Ref S3OriginAccessIdentity ] ]
+            Action:
+              - 's3:ListBucket'
+            Resource: !GetAtt AlbumArtBucket.Arn
+  # S3 Serve Music File Bucket
   ServeMusicFileBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -128,6 +158,12 @@ Resources:
           S3OriginConfig:
             OriginAccessIdentity:
               Fn::Join: [ '', [ 'origin-access-identity/cloudfront/', !Ref S3OriginAccessIdentity ] ]
+        - DomainName: !GetAtt AlbumArtBucket.DomainName
+          Id:
+            Fn::Join: [ '-', [ 'origin', !GetAtt AlbumArtBucket.DomainName ] ]
+          S3OriginConfig:
+            OriginAccessIdentity:
+              Fn::Join: [ '', [ 'origin-access-identity/cloudfront/', !Ref S3OriginAccessIdentity ] ]
         - DomainName: !GetAtt ServeMusicFileBucket.DomainName
           Id:
             Fn::Join: [ '-', [ 'origin', !GetAtt ServeMusicFileBucket.DomainName ] ]
@@ -163,6 +199,7 @@ Resources:
             Cookies:
               Forward: all
           ViewerProtocolPolicy: redirect-to-https
+          Compress: true
         CacheBehaviors:
         - AllowedMethods:
           - GET
@@ -184,8 +221,23 @@ Resources:
           - HEAD
           - OPTIONS
           TargetOriginId:
+            Fn::Join: [ '-', [ 'origin', !GetAtt AlbumArtBucket.DomainName ] ]
+          PathPattern:
+            Fn::Join: [ '', [ '/', !Ref AlbumArtBucketFilePrefix, '/*' ] ]
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+          Compress: true
+        - AllowedMethods:
+          - GET
+          - HEAD
+          - OPTIONS
+          TargetOriginId:
             Fn::Join: [ '-', [ 'origin', !GetAtt ServeMusicFileBucket.DomainName ] ]
-          PathPattern: '/raw/*'
+          PathPattern:
+            Fn::Join: [ '', [ '/', !Ref ServeTrackBucketFilePrefix, '/*' ] ]
           DefaultTTL: 60
           MaxTTL: 3600
           MinTTL: 60
@@ -194,6 +246,7 @@ Resources:
             Cookies:
               Forward: none
           ViewerProtocolPolicy: redirect-to-https
+          Compress: true
   # DNS Record Set
   MusicArchiveDistributionDNSRecord:
     Type: AWS::Route53::RecordSet
@@ -205,7 +258,7 @@ Resources:
         DNSName: !GetAtt MusicArchiveDistribution.DomainName
         EvaluateTargetHealth: false
         HostedZoneId: Z2FDTNDATAQYW2
-  # DynamoDB table for library
+  # DynamoDB Table for Library
   MusicLibraryTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -355,7 +408,12 @@ Resources:
         Fn::GetAtt:
           - TagReaderRole
           - Arn
-      Timeout: 30
+      MemorySize: 1024
+      Timeout: 120
+      Environment:
+        Variables:
+          ALBUM_ART_BUCKET: !Ref AlbumArtBucket
+          ALBUM_ART_BUCKET_PREFIX: !Ref AlbumArtBucketFilePrefix
   TagReaderLambdaPermission:
     DependsOn: TagReaderFunction
     Type: AWS::Lambda::Permission
@@ -481,6 +539,7 @@ Resources:
         Fn::GetAtt:
           - ApiS3LambdaRole
           - Arn
+      Timeout: 30
       Environment:
         Variables:
           DB_LIBRARY_TABLE: !Ref DbLibraryTableStore
