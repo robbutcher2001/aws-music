@@ -10,12 +10,23 @@ module.exports = {
     publicPath: '/',
     filename: 'bundle.js'
   },
-  plugins: [
-    new htmlwebpack({
-      template: path.join(path.resolve(__dirname, 'dist'), 'index.html'),
-    }),
-  ],
+  module: {
+    rules: [{
+      exclude: /node_modules/,
+      use: [
+        'babel-loader',
+      ],
+    }],
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
+  },
+  // plugins: [
+  //   new htmlwebpack({
+  //     template: path.join(path.resolve(__dirname, 'src'), 'index.html'),
+  //   }),
+  // ],
   devServer: {
-    contentBase: path.resolve(__dirname, 'dist')
+    contentBase: path.resolve(__dirname, 'src')
   }
 };
