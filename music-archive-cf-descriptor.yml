@@ -409,7 +409,7 @@ Resources:
           - TagReaderRole
           - Arn
       MemorySize: 1024
-      Timeout: 30
+      Timeout: 120
       Environment:
         Variables:
           ALBUM_ART_BUCKET: !Ref AlbumArtBucket
