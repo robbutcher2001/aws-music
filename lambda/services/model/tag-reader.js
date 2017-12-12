@@ -22,15 +22,15 @@ const extractAndUploadAlbumArt = (albumArtTag, albumArtName, targetBucket) =>
         Key: albumArtLocation
       };
 
-      s3.headObject(headObjectParams, function(err, data) {
+      s3.headObject(headObjectParams, function(err, headData) {
         if (err && err.code === 'NotFound') {
-          console.info(`Album art doesn't exist so creating new one`);
+          console.info(`Album art doesn't exist so creating new one [${albumArtLocation}]`);
           const putObjectParams = Object.assign({}, headObjectParams, {
             Body: Buffer.from(albumArtTag.data),
             ContentType: albumArtTag.format
           });
 
-          s3.putObject(putObjectParams, function(err, data) {
+          s3.putObject(putObjectParams, function(err, putData) {
             if (err) {
               reject('-');
             }
@@ -47,6 +47,9 @@ const extractAndUploadAlbumArt = (albumArtTag, albumArtName, targetBucket) =>
           resolve(albumArtLocation);
         }
       });
+    }
+    else {
+      resolve('-');
     }
   });
 
@@ -100,7 +103,7 @@ exports.handler = (event, context, callback) => {
             .then(albumArtLocation => {
               fileTags.push({ Key: 'albumart', Value: albumArtLocation });
 
-              s3.putObjectTagging(uploadedTrack, function(err, data) {
+              s3.putObjectTagging(uploadedTrack, function(err, putData) {
                 if (err) {
                   console.error(err.code, err.message);
                   callback(err);
