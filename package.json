@@ -3,10 +3,15 @@
   "version": "0.0.1",
   "description": "React, Redux and React Router generated front end for music archive app",
   "author": "Rob Butcher",
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "build": "webpack"
+  },
   "dependencies": {
     "mime-types": "^2.1.17"
   },
   "devDependencies": {
-    "webpack": "^3.10.0"
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.9.7"
   }
 }

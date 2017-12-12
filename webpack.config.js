@@ -8,5 +8,8 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
     filename: 'bundle.js'
+  },
+  devServer: {
+    contentBase: path.resolve(__dirname, 'dist')
   }
 };
