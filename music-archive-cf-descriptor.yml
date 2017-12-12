@@ -408,6 +408,7 @@ Resources:
         Fn::GetAtt:
           - TagReaderRole
           - Arn
+      MemorySize: 1024
       Timeout: 30
       Environment:
         Variables:
