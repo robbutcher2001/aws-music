@@ -52,7 +52,7 @@ const buildDbModelItems = tracksFlatList => {
             trackItem.id = uuid();
             album.tracks.push(trackItem);
 
-            if (trackItem.albumart !== '-' && !albumArtAdded) {
+            if (typeof trackItem.albumart !== 'undefined' && trackItem.albumart !== '-' && !albumArtAdded) {
               artist.albumart = trackItem.albumart;
               album.albumart = trackItem.albumart;
               albumArtAdded = true;

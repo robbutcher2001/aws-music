@@ -194,7 +194,13 @@ const createArtistLink = artist => {
   a.className = 'image fit';
 
   const img = document.createElement('img');
-  img.src = `/${artist.albumart}`;
+
+  if (artist.albumart !== '-') {
+    img.src = `/${artist.albumart}`;
+  }
+  else {
+    img.src = `/images/headphones.png`;
+  }
   a.appendChild(img);
 
   const div = document.createElement('div');
@@ -210,7 +216,13 @@ const createAlbumLink = (artistId, album) => {
   a.className = 'image fit';
 
   const img = document.createElement('img');
-  img.src = `/${album.albumart}`;
+
+  if (album.albumart !== '-') {
+    img.src = `/${album.albumart}`;
+  }
+  else {
+    img.src = `/images/headphones.png`;
+  }
   a.appendChild(img);
 
   const div = document.createElement('div');
