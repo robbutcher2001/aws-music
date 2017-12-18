@@ -41,18 +41,18 @@ const buildDbModelItems = tracksFlatList => {
 
   getUniqueArtists(tracksFlatList).forEach(artistItem => {
     if (typeof artistItem.artist !== 'undefined') {
-      const artist = {id: uuid(), artist: artistItem.artist, albums: []};
+      const artist = {id: uuid(), artist: artistItem.artist, albumart: '-', albums: []};
       items.push(artist);
       getArtistAlbums(tracksFlatList, artistItem.artist).forEach(albumItem => {
         if (typeof albumItem.album !== 'undefined') {
-          const album = {id: uuid(), name: albumItem.album, tracks: []};
+          const album = {id: uuid(), name: albumItem.album, albumart: '-', tracks: []};
           artist.albums.push(album);
           let albumArtAdded = false;
           getAlbumTracks(tracksFlatList, artistItem.artist, albumItem.album).forEach(trackItem => {
             trackItem.id = uuid();
             album.tracks.push(trackItem);
 
-            if (trackItem.albumart !== '-' && !albumArtAdded) {
+            if (typeof trackItem.albumart !== 'undefined' && trackItem.albumart !== '-' && !albumArtAdded) {
               artist.albumart = trackItem.albumart;
               album.albumart = trackItem.albumart;
               albumArtAdded = true;
