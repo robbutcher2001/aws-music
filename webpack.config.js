@@ -1,5 +1,5 @@
 const path = require('path');
-const htmlwebpack = require('html-webpack-plugin');
+const htmlWebpack = require('html-webpack-plugin');
 
 module.exports = {
   entry: [
@@ -23,8 +23,11 @@ module.exports = {
     extensions: ['.js', '.jsx']
   },
   plugins: [
-    new htmlwebpack({
+    new htmlWebpack({
       template: path.join(path.resolve(__dirname, 'src'), 'index.html'),
     }),
-  ]
+  ],
+  devServer: {
+    contentBase: path.resolve(__dirname, 'src')
+  }
 };
