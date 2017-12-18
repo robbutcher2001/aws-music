@@ -16,6 +16,9 @@ phases:
       - sed -ie "s/%{SourceCodeBucket}/lambda-source-${timestamp}.zip/g" music-archive-cf-descriptor.yml
       - sed -ie "s/%{MusicLibraryApiDeployment}/MusicLibraryApiDeployment${timestamp}/g" music-archive-cf-descriptor.yml
       - aws s3 cp music-archive-cf-descriptor.yml s3://${SourceCodeBucket}
+      - npm install
+      - cp -r src/boilerplate-assets/ dist/.
+      - cp -r src/images/ dist/.
 artifacts:
   files:
     - dist/**/*
