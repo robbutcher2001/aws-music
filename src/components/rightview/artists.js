@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import ArtistsLoading from './artists-loading';
+import ArtistList from './artist-list';
 
 export default class Artists extends Component {
   constructor(props) {
@@ -14,12 +14,15 @@ export default class Artists extends Component {
   }
 
   getArtists() {
-    fetch('/boilerplate-assets/artists.json')
+    fetch('/api/artists')
       .then(response => {
         response.json().then(artists => {
           this.setState({
             artists: artists.data
           });
+        })
+        .catch(err => {
+          console.error(err);
         });
       })
       .catch(err => {
@@ -35,7 +38,7 @@ export default class Artists extends Component {
             <h2>Artists</h2>
           </header>
           <p>Who would you like to listen to&#63;</p>
-          <ArtistsLoading />
+          <ArtistList artists={this.state.artists} />
         </div>
       </section>
     );
