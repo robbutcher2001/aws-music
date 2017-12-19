@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import NowPlaying from './now-playing';
 import UpNext from './up-next';
 
-export default class App extends Component {
+export default class SidePanelContainer extends Component {
   render() {
     return (
       <div id="header">

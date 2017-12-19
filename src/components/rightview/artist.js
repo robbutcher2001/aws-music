@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class ArtistsLoading extends Component {
+export default class Artist extends Component {
   render() {
     return (
       <div id="loading" className="row">
