@@ -1,23 +1,25 @@
 import React, { Component } from 'react';
 
-import ArtistList from './artist-list';
+import Grid from './grid';
 
-const createArtistRows = artists => {
+const createRows = items => {
   const rows = [], size = 4;
 
-  while (artists.length > 0) {
-    rows.push(artists.splice(0, size));
+  while (items.length > 0) {
+    rows.push(items.splice(0, size));
   }
 
   return rows;
 };
 
-export default class Artists extends Component {
+export default class ArtistsView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      artists: []
+      gridTitle: 'Artists',
+      gridHeading: 'Who would you like to listen to?',
+      gridRows: []
     }
 
     this.getArtists();
@@ -28,7 +30,7 @@ export default class Artists extends Component {
       .then(response => {
         response.json().then(artists => {
           this.setState({
-            artists: artists.data
+            gridRows: createRows(artists.data)
           });
         })
         .catch(err => {
@@ -42,13 +44,13 @@ export default class Artists extends Component {
 
   render() {
     return (
-      <section id="artists" className="two">
+      <section className="two">
         <div className="container">
           <header>
-            <h2>Artists</h2>
+            <h2>{this.state.gridTitle}</h2>
           </header>
-          <p>Who would you like to listen to&#63;</p>
-          <ArtistList artists={this.state.artists} />
+          <p>{this.state.gridHeading}</p>
+          <Grid gridRows={this.state.gridRows} />
         </div>
       </section>
     );
