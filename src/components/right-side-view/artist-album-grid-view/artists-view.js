@@ -17,8 +17,8 @@ export default class ArtistsView extends Component {
     super(props);
 
     this.state = {
-      gridTitle: 'Artists',
-      gridHeading: 'Who would you like to listen to?',
+      gridTitle: '',
+      gridHeading: 'Hold up, loading..',
       gridRows: []
     }
 
@@ -30,6 +30,8 @@ export default class ArtistsView extends Component {
       .then(response => {
         response.json().then(artists => {
           this.setState({
+            gridTitle: 'Artists',
+            gridHeading: 'Who would you like to listen to?',
             gridRows: createRows(artists.data)
           });
         })
