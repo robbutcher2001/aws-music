@@ -46,9 +46,7 @@ export default class ArtistsView extends Component {
     return (
       <section className="two">
         <div className="container">
-          <header>
-            <h2>{this.state.gridTitle}</h2>
-          </header>
+          <h2>{this.state.gridTitle}</h2>
           <p>{this.state.gridHeading}</p>
           <Grid gridRows={this.state.gridRows} />
         </div>
