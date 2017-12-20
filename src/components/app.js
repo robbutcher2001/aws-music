@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 
-import SidePanel from './sidepanel/side-panel-container';
-import RightView from './rightview/right-view-container';
+import LeftSidePanelContainer from './left-side-panel/left-side-panel-container';
+import RightSideViewContainer from './right-side-view/right-side-view-container';
 
 export default class MusicApp extends Component {
   render() {
     return (
       <div>
-        <SidePanel />
-        <RightView />
+        <LeftSidePanelContainer />
+        <RightSideViewContainer />
       </div>
     );
   }

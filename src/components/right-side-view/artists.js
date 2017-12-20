@@ -2,6 +2,16 @@ import React, { Component } from 'react';
 
 import ArtistList from './artist-list';
 
+const createArtistRows = artists => {
+  const rows = [], size = 4;
+
+  while (artists.length > 0) {
+    rows.push(artists.splice(0, size));
+  }
+
+  return rows;
+};
+
 export default class Artists extends Component {
   constructor(props) {
     super(props);
