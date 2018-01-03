@@ -1,12 +1,12 @@
 const path = require('path');
 const htmlWebpack = require('html-webpack-plugin');
 
-module.exports = {
+const baseConfig = {
   entry: [
     './src/index.js'
   ],
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '../dist'),
     publicPath: '/',
     filename: 'app-bundle.js'
   },
@@ -24,10 +24,12 @@ module.exports = {
   },
   plugins: [
     new htmlWebpack({
-      template: path.join(path.resolve(__dirname, 'src'), 'index.html'),
+      template: path.join(path.resolve(__dirname, '../src'), 'index.html'),
     }),
   ],
   devServer: {
-    contentBase: path.resolve(__dirname, 'src')
+    contentBase: path.resolve(__dirname, '../src')
   }
 };
+
+module.exports = baseConfig;
