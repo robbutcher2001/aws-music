@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+//do we even need hrefs as /artist/ID/album/ID/track/ID when we display the tracks
+//or just pull all the IDs from the state when we need to make a request to get track
 const GridRow = props => {
   const GridItems = props.gridRow.map(gridItem => {
     return (
