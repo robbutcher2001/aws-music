@@ -5,6 +5,10 @@ const webpack = require('webpack');
 module.exports = Object.assign({}, baseConfig, {
   plugins: [
     ...baseConfig.plugins,
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      __API_BASE__: JSON.stringify('/api')
+    }),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
       compressor: {
@@ -14,6 +18,6 @@ module.exports = Object.assign({}, baseConfig, {
       output: {
         comments: false
       }
-    }),
+    })
   ]
 });

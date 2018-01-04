@@ -26,7 +26,7 @@ export default class ArtistsView extends Component {
   }
 
   getArtists() {
-    fetch('/api/artists')
+    fetch(`${__API_BASE__}/artists`)
       .then(response => {
         response.json().then(artists => {
           this.setState({
