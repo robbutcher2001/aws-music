@@ -35,14 +35,18 @@ export default class ArtistsView extends Component {
             gridRows: createRows(artists.data)
           });
         })
-        .catch(err => {
-          console.error(err);
-        });
+        .catch(err => this.handleError(err));
       })
-      .catch(err => {
-        console.error(err);
-      });
+      .catch(err => this.handleError(err));
   }
+
+  handleError(err) {
+    this.setState({
+      gridTitle: 'Something went wrong',
+      gridHeading: 'Artists cannot be loaded'
+    });
+    console.error(err);
+  };
 
   render() {
     return (
