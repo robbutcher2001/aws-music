@@ -29,6 +29,8 @@ export default class ArtistsView extends Component {
     fetch(`${__API_BASE__}/artists`)
       .then(response => {
         response.json().then(artists => {
+          //TODO: the structure of gridRows should not describe the structure of the view
+          // ie. gridRows should be an array(n) of array(4) to match the responsive grid but instead flat
           this.setState({
             gridTitle: 'Artists',
             gridHeading: 'Who would you like to listen to?',
