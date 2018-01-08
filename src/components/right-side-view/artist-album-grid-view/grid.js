@@ -3,6 +3,12 @@ import React, { Component } from 'react';
 import GridRow from './grid-row';
 
 const Grid = props => {
+  if (props.status === 'error') {
+    return (
+      <p>Please try again later</p>
+    );
+  }
+
   if (props.gridRows.length < 1) {
     return (
       <div id="loading" className="row">

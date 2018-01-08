@@ -44,8 +44,9 @@ export default class ArtistsView extends Component {
 
   handleError(err) {
     this.setState({
-      gridTitle: 'Something went wrong',
-      gridHeading: 'Artists cannot be loaded'
+      gridTitle: 'Artists',
+      gridHeading: 'Fetch went wrong, artists cannot be loaded',
+      status: 'error'
     });
     console.error(err);
   };
@@ -56,7 +57,7 @@ export default class ArtistsView extends Component {
         <div className="container">
           <h2>{this.state.gridTitle}</h2>
           <p>{this.state.gridHeading}</p>
-          <Grid gridRows={this.state.gridRows} />
+          <Grid status={this.state.status} gridRows={this.state.gridRows} />
         </div>
       </section>
     );
