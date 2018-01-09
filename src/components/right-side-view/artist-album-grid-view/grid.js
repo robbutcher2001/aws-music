@@ -2,6 +2,16 @@ import React, { Component } from 'react';
 
 import GridRow from './grid-row';
 
+const createRows = items => {
+  const rows = [], size = 4;
+
+  while (items.length > 0) {
+    rows.push(items.splice(0, size));
+  }
+
+  return rows;
+};
+
 const Grid = props => {
   if (props.status === 'error') {
     return (
@@ -9,7 +19,7 @@ const Grid = props => {
     );
   }
 
-  if (props.gridRows.length < 1) {
+  if (props.gridData.length < 1) {
     return (
       <div id="loading" className="row">
         <div className="12u 12u(mobile)">
@@ -20,7 +30,9 @@ const Grid = props => {
     );
   }
 
-  const GridRows = props.gridRows.map(gridRow => {
+  const gridRows = createRows(props.gridData);
+
+  const GridRows = gridRows.map(gridRow => {
     return (
       <GridRow key={gridRow[0].id} gridRow={gridRow}/>
     );

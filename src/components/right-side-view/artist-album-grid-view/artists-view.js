@@ -2,16 +2,6 @@ import React, { Component } from 'react';
 
 import Grid from './grid';
 
-const createRows = items => {
-  const rows = [], size = 4;
-
-  while (items.length > 0) {
-    rows.push(items.splice(0, size));
-  }
-
-  return rows;
-};
-
 export default class ArtistsView extends Component {
   constructor(props) {
     super(props);
@@ -19,7 +9,7 @@ export default class ArtistsView extends Component {
     this.state = {
       gridTitle: 'Artists',
       gridHeading: 'Hold up, loading..',
-      gridRows: []
+      gridData: []
     }
 
     this.getArtists();
@@ -29,11 +19,9 @@ export default class ArtistsView extends Component {
     fetch(`${__API_BASE__}/artists`)
       .then(response => {
         response.json().then(artists => {
-          //TODO: the structure of gridRows should not describe the structure of the view
-          // ie. gridRows should be an array(n) of array(4) to match the responsive grid but instead flat
           this.setState({
             gridHeading: 'Who would you like to listen to?',
-            gridRows: createRows(artists.data)
+            gridData: artists.data
           });
         })
         .catch(err => this.handleError(err));
@@ -55,7 +43,7 @@ export default class ArtistsView extends Component {
         <div className="container">
           <h2>{this.state.gridTitle}</h2>
           <p>{this.state.gridHeading}</p>
-          <Grid status={this.state.status} gridRows={this.state.gridRows} />
+          <Grid status={this.state.status} gridData={this.state.gridData} />
         </div>
       </section>
     );
