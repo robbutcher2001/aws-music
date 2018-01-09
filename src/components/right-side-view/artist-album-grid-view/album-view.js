@@ -3,17 +3,17 @@ import React, { Component } from 'react';
 import GenericView from './generic-view';
 import Grid from './grid';
 
-export default class ArtistsView extends GenericView {
+export default class AlbumView extends GenericView {
   constructor(props) {
     super(props);
 
     this.state = {
-      gridTitle: 'Artists',
-      gridHeading: 'Hold up, loading..',
+      gridTitle: 'Albums',
+      gridHeading: 'Grabbing albums..',
       gridData: []
     }
 
-    super.fetchGridData('artists', 'Who would you like to listen to?');
+    super.fetchGridData('artist/1/albums', 'Which is your favourite album?');
   }
 
   render() {
