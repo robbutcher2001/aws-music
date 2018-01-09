@@ -17,7 +17,7 @@ export default class ArtistsView extends Component {
     super(props);
 
     this.state = {
-      gridTitle: '',
+      gridTitle: 'Artists',
       gridHeading: 'Hold up, loading..',
       gridRows: []
     }
@@ -32,7 +32,6 @@ export default class ArtistsView extends Component {
           //TODO: the structure of gridRows should not describe the structure of the view
           // ie. gridRows should be an array(n) of array(4) to match the responsive grid but instead flat
           this.setState({
-            gridTitle: 'Artists',
             gridHeading: 'Who would you like to listen to?',
             gridRows: createRows(artists.data)
           });
@@ -44,7 +43,6 @@ export default class ArtistsView extends Component {
 
   handleError(err) {
     this.setState({
-      gridTitle: 'Artists',
       gridHeading: 'Fetch went wrong, artists cannot be loaded',
       status: 'error'
     });

@@ -12,8 +12,10 @@ app.get('/', (request, response) => {
 });
 
 app.get('/artists', (request, response) => {
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.json(artists);
+  setTimeout(() => {
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.json(artists);
+  }, 3000);
 });
 
 app.get('/artist/:artistId/albums', (request, response) => {
