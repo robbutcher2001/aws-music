@@ -5,10 +5,10 @@ export default class NowPlaying extends Component {
     return (
       <div id="logo">
         <span className="image avatar48">
-          <img src="images/cb.png" alt="" />
+          <img src="/album-art/london-grammar-if-you-wait" alt="London Grammar album art" />
         </span>
         <h1 id="title">Now playing</h1>
-        <p>Alternative Rock | 2014</p>
+        <p>London Grammar | 2014</p>
       </div>
     );
   }
