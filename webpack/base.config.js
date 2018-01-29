@@ -4,7 +4,8 @@ const htmlWebpack = require('html-webpack-plugin');
 
 const baseConfig = {
   entry: [
-    './src/index.js'
+    './src/index.js',
+    'whatwg-fetch'
   ],
   output: {
     path: path.resolve(__dirname, '../dist'),
