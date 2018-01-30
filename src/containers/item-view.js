@@ -8,21 +8,12 @@ import Grid from './grid';
 export class ItemView extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      gridTitle: 'Artists',
-      gridHeading: 'Hold up Rib, loading..',
-      gridData: []
-    }
-
-    this.props.fetchArtists('artists', 'Blah?');
+    this.props.fetchArtists('artists');
   }
 
   render() {
     return (
-      <div>
-        <Grid />
-      </div>
+      <Grid />
     )
   }
 }
