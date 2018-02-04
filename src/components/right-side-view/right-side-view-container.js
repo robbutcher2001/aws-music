@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 
 import MusicBanner from './music-banner';
 // import ArtistsView from './artist-album-grid-view/artists-view';
-import ItemView from '../../containers/item-view';
+import Grid from '../../containers/grid';
 
 export default class RightSideViewContainer extends Component {
   render() {
     return (
       <div id="main">
         <MusicBanner />
-        <ItemView />
+        <Grid />
       </div>
     );
   }

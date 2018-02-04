@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchArtists } from '../actions/fetch-artists';
 
-const createRowData = items => {
+const createRowData = originalItems => {
+  // We don't want to mutate the original object
+  const items = Object.assign([], originalItems);
   const rows = [], size = 4;
 
   while (items.length > 0) {
@@ -33,6 +37,10 @@ const GridRow = props => {
 }
 
 export class Grid extends Component {
+  constructor(props) {
+    super(props);
+    this.props.fetchArtists('artists');
+  }
 
   renderWithContainer(contents) {
     return (
@@ -66,8 +74,8 @@ export class Grid extends Component {
 
     return this.renderWithContainer(
       <div>
-        <h2>{this.props.gridInfo.gridTitle}</h2>
-        <p>{this.props.gridInfo.gridHeading}</p>
+        <h2>{this.props.gridTitle}</h2>
+        <p>{this.props.gridHeading}</p>
         <div id="grid">
           {GridRows}
         </div>
@@ -79,9 +87,14 @@ export class Grid extends Component {
 function mapStateToProps(state) {
   console.log(state);
   return {
-    gridInfo: state.gridInfo,
+    gridTitle: state.gridInfo.gridTitle,
+    gridHeading: state.gridInfo.gridHeading,
     artists: state.artists
   };
 }
 
-export default connect(mapStateToProps)(Grid);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchArtists }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Grid);
