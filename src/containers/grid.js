@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const createRowData = originalItems => {
   // We don't want to mutate the original object
@@ -18,7 +19,9 @@ const GridRow = props => {
     return (
       <div key={rowItem.id} className="3u 6u(mobile)">
         <article className="item">
-          <a href={`/artist/${rowItem.id}`} className="image fit"><img src={rowItem.albumart !== '-' ? `/${rowItem.albumart}` : '/images/headphones.png'} alt="" /></a>
+          <Link className="image fit" to={`/artist/${rowItem.id}`}>
+            <img src={rowItem.albumart !== '-' ? `/${rowItem.albumart}` : '/images/headphones.png'} alt="" />
+          </Link>
           <header>
             <h3>{rowItem.name}</h3>
           </header>

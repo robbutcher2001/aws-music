@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchArtists } from '../actions/fetch-artists';
+import { fetchAlbums } from '../actions/fetch-albums';
 import Grid from './grid';
 
-export class ArtistsGrid extends Grid {
+export class AlbumsGrid extends Grid {
   constructor(props) {
     super(props);
   }
 
   componentDidMount() {
-    this.props.fetchArtists('artists');
+    this.props.fetchAlbums(`artist/${this.props.match.params.artistId}/albums`);
   }
 
   render() {
@@ -22,8 +22,8 @@ function mapStateToProps(state) {
   return {
     gridTitle: state.gridInfo.gridTitle,
     gridHeading: state.gridInfo.gridHeading,
-    gridData: state.artists
+    gridData: state.albums
   };
 }
 
-export default connect(mapStateToProps, { fetchArtists })(ArtistsGrid);
+export default connect(mapStateToProps, { fetchAlbums })(AlbumsGrid);
