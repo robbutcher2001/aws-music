@@ -1,5 +1,5 @@
 import axios from 'axios';
-export const FETCH_ARTISTS = 'FETCH_ARTISTS';
+export const FETCH_ARTISTS = 'FETCH_ARTISTS'; //TODO: move to constants
 
 export function fetchArtists(api) {
   const request = axios.get(`${__API_BASE__}/${api}`);

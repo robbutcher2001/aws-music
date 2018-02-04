@@ -85,7 +85,6 @@ export class Grid extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state);
   return {
     gridTitle: state.gridInfo.gridTitle,
     gridHeading: state.gridInfo.gridHeading,
