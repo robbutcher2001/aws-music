@@ -6,8 +6,10 @@ export default function(state = [], action) {
     // Do not mutate the state by doing something like state.push(). The following
     // returns a new array object and not a mutated version of the state argument
     // passed to this function.
-    return action.payload.data.data.concat(...state);
-  }
+    // return action.payload.data.concat(...state);
+    return action.payload.data;
 
-  return state;
+    default:
+      return state;
+  }
 }

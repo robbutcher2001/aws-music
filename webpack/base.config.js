@@ -30,6 +30,7 @@ const baseConfig = {
     }),
   ],
   devServer: {
+    historyApiFallback: true,
     contentBase: path.resolve(__dirname, '../src')
   }
 };

@@ -1,25 +1,15 @@
-import axios from 'axios';
 export const FETCH_ARTISTS = 'FETCH_ARTISTS'; //TODO: move to constants
 
 export function fetchArtists(api) {
-  const request = axios.get(`${__API_BASE__}/${api}`);
+  //TODO: move async operation to middleware by using module like axios
+  const request = fetch(`${__API_BASE__}/${api}`)
+    .then(response => response.json())
+    .catch(err => { err });
 
   return {
     type: FETCH_ARTISTS,
     payload: request
   }
-
-  // fetch(`${__API_BASE__}/${api}`)
-  //   .then(response => {
-  //     response.json().then(responseJson => {
-  //       return {
-  //         type: FETCH_ARTISTS,
-  //         payload: responseJson
-  //       }
-  //     })
-  //     .catch(err => handleError(err));
-  //   })
-  //   .catch(err => handleError(err));
 }
 //
 // const handleError = err => {
