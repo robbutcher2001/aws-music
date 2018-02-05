@@ -8,6 +8,11 @@ import Container from './common/grid/container';
 import { createRowData } from './common/grid/helpers';
 import { fetchAlbums } from '../actions/fetch-albums';
 
+const loadingTitle = 'Albums';
+const loadingHeading = 'Grabbing albums..';
+const loadedTitle = 'Albums';
+const loadedHeading = 'Which is your favourite album?';
+
 const GridRow = props => {
   const RowItems = props.rowData.map(rowItem => {
     const link = `/artist/${props.artistId}/album/${rowItem.id}`;
@@ -29,12 +34,13 @@ export class AlbumsGrid extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchAlbums(`artist/${this.props.match.params.artistId}/albums`);
+    const artistId = this.props.match.params.artistId;
+    this.props.fetchAlbums(`artist/${artistId}/albums`);
   }
 
   render() {
     if (!this.props.albums || this.props.albums.length < 1) {
-      return <Loading title='blah' heading='something' />
+      return <Loading title={loadingTitle} heading={loadingHeading} />
     }
 
     const rowData = createRowData(this.props.albums);
@@ -45,15 +51,13 @@ export class AlbumsGrid extends Component {
       );
     });
 
-    return <Container title='done' heading='more' rows={GridRows} />
+    return <Container title={loadedTitle} heading={loadedHeading} rows={GridRows} />
   }
 }
 
 function mapStateToProps(state) {
   return {
-    gridTitle: state.gridInfo.gridTitle,
-    gridHeading: state.gridInfo.gridHeading,
-    albums: state.albums
+    albums: state.picker.albums
   };
 }
 

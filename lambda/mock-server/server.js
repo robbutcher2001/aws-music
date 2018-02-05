@@ -21,8 +21,10 @@ app.get('/artists', (request, response) => {
 app.get('/artist/:artistId/albums', (request, response) => {
   const { artistId } = request.params;
 
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.json(albums(artistId));
+  setTimeout(() => {
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.json(albums(artistId));
+  }, 1000);
 });
 
 app.get('/artist/:artistId/album/:albumId/tracks', (request, response) => {

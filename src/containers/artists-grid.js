@@ -8,6 +8,11 @@ import Container from './common/grid/container';
 import { createRowData } from './common/grid/helpers';
 import { fetchArtists } from '../actions/fetch-artists';
 
+const loadingTitle = 'Artists';
+const loadingHeading = 'Hold up, loading..';
+const loadedTitle = 'Artists';
+const loadedHeading = 'Who would you like to listen to?';
+
 const GridRow = props => {
   const RowItems = props.rowData.map(rowItem => {
     return (
@@ -33,7 +38,7 @@ export class ArtistsGrid extends Component {
 
   render() {
     if (!this.props.artists || this.props.artists.length < 1) {
-      return <Loading title='blah' heading='something' />
+      return <Loading title={loadingTitle} heading={loadingHeading} />
     }
 
     const rowData = createRowData(this.props.artists);
@@ -44,15 +49,13 @@ export class ArtistsGrid extends Component {
       );
     });
 
-    return <Container title='done' heading='more' rows={GridRows} />
+    return <Container title={loadedTitle} heading={loadedHeading} rows={GridRows} />
   }
 }
 
 function mapStateToProps(state) {
   return {
-    gridTitle: state.gridInfo.gridTitle,
-    gridHeading: state.gridInfo.gridHeading,
-    artists: state.artists
+    artists: state.picker.artists
   };
 }
 

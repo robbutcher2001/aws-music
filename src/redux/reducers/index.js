@@ -1,12 +1,8 @@
 import { combineReducers } from 'redux';
-import GridReducer from './reducer-grid';
-import ArtistsReducer from './reducer-artists';
-import AlbumsReducer from './reducer-albums';
+import PickerReducer from './reducer-picker';
 
 const rootReducer = combineReducers({
-  gridInfo: GridReducer,
-  artists: ArtistsReducer,
-  albums: AlbumsReducer
+  picker: PickerReducer
 });
 
 export default rootReducer;
