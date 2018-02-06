@@ -6,9 +6,9 @@ export class NowPlaying extends Component {
     super(props);
   }
 
-  render() {
-    if (!this.props.queue || this.props.queue.length < 1) {
-      return (
+  renderNowPlaying(extraContent) {
+    return (
+      <div>
         <div id="logo">
           <span className="image avatar48">
             <img src="/album-art/london-grammar-if-you-wait" alt="London Grammar album art" />
@@ -16,18 +16,20 @@ export class NowPlaying extends Component {
           <h1 id="title">Now playing</h1>
           <p>London Grammar | 2014</p>
         </div>
-      );
+        {extraContent}
+      </div>
+    );
+  }
+
+  render() {
+    if (!this.props.queue || this.props.queue.length < 1) {
+      return this.renderNowPlaying();
     }
 
-    return (
-      <div id="logo">
-        <span className="image avatar48">
-          <img src="/album-art/london-grammar-if-you-wait" alt="London Grammar album art" />
-        </span>
-        <audio autoPlay controls preload="auto" title="iOS test title" style={{display: 'none'}}><source src={'/' + this.props.queue.pop().location}/></audio>
-        <h1 id="title">Now playing</h1>
-        <p>London Grammar | 2014</p>
-      </div>
+    return this.renderNowPlaying(
+      <audio autoPlay controls preload="auto" title="iOS test title" style={{width: '100%'}}>
+        <source src={'/' + this.props.queue.pop().location}/>
+      </audio>
     );
   }
 }
