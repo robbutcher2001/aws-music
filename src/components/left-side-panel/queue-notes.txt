@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+
+<audio autoplay="" controls="" title="iOS test title"><source src="/raw/76d1290e-cd1a-4a24-9ae0-5e34b67e5bf2"></audio>
+<audio controls="" preload="auto" title="Next tune"><source src="/raw/15d08da1-f3ec-4fe2-af6f-c32d70601e60"></audio>
+<audio controls="" preload="auto" title="Another tune"><source src="/raw/85a59856-d0cd-4e90-ba79-8a3686ae733b"></audio>
+
+
+</body>
+</html>
+
+<!-- Each audio tag can be a react component and represent each queued track on the left hand side. If another
+track is clicked, the pause() function is called on the currently playing audio tag and the play() function
+is called on the selected track. The queue of tracks on the left is reshuffled (selected to top and removed from queue).
+All audio tags can be hidden all of the time. -->
+
+<!-- Maybe use the oncanplay event to show loading spinner until enough has buffered it can play: https://www.w3schools.com/tags/ref_eventattributes.asp -->

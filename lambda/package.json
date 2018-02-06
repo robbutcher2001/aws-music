@@ -3,12 +3,18 @@
   "version": "0.0.1",
   "description": "Lambda functions for middleware layer of music archive app",
   "author": "Rob Butcher",
+  "scripts": {
+    "dev": "node mock-server/server.js"
+  },
   "dependencies": {
     "jsmediatags": "^3.8.1",
-    "uuid": "^3.1.0",
     "mime-types": "^2.1.17",
     "mkdirp": "^0.5.1",
     "path": "^0.12.7",
+    "uuid": "^3.1.0",
     "yauzl": "^2.9.1"
+  },
+  "devDependencies": {
+    "express": "^4.16.2"
   }
 }
