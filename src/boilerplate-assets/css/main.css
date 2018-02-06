@@ -1780,6 +1780,10 @@
 			padding-left: 0.25em;
 		}
 
+		ol li > a {
+			cursor: pointer;
+		}
+
 /* Form */
 
 	form label {

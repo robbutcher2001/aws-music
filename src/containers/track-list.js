@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import Loading from './common/loading';
-import RowItem from './common/grid/row-item';
+import TrackButton from './track-button';
 import Container from './common/grid/container';
 
 import { fetchTracks } from '../actions/fetch-tracks';
@@ -32,18 +32,18 @@ const getLoadedHeading = tracks => {
   return loadedHeading;
 }
 
-const List = props => {
-  const Items = props.items.map(item => {
+const TrackButtons = props => {
+  const TrackButtons = props.tracks.map(track => {
     return (
-      <li key={item.id}>
-        <a>{item.title}</a>
+      <li key={track.id}>
+        <TrackButton track={track} artistId={props.artistId} albumId={props.albumId} />
       </li>
     );
   });
 
   return (
     <ol className="track-list ">
-      {Items}
+      {TrackButtons}
     </ol>
   );
 }
@@ -64,11 +64,14 @@ export class TrackList extends Component {
       return <Loading title={loadingTitle} heading={loadingHeading} />
     }
 
+    const artistId = this.props.match.params.artistId;
+    const albumId = this.props.match.params.albumId;
+
     let loadedTitle = getLoadedTitle(this.props.tracks);
     let loadedHeading = getLoadedHeading(this.props.tracks);
-    const tracks = <List items={this.props.tracks}/>
+    const trackButtons = <TrackButtons tracks={this.props.tracks} artistId={artistId} albumId={albumId} />
 
-    return <Container title={loadedTitle} heading={loadedHeading} rows={tracks} />
+    return <Container title={loadedTitle} heading={loadedHeading} rows={trackButtons} />
   }
 }
 
