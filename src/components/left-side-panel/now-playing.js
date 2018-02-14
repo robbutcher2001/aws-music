@@ -6,6 +6,20 @@ export class NowPlaying extends Component {
     super(props);
   }
 
+  renderNotPlaying(extraContent) {
+    return (
+      <div>
+        <div id="logo">
+          <span className="image avatar48">
+            <img src="/images/headphones.png" alt="No album art" />
+          </span>
+          <h1 id="title">Nothing playing</h1>
+        </div>
+        {extraContent}
+      </div>
+    );
+  }
+
   renderNowPlaying(extraContent) {
     return (
       <div>
@@ -22,13 +36,13 @@ export class NowPlaying extends Component {
   }
 
   render() {
-    if (!this.props.queue || this.props.queue.length < 1) {
-      return this.renderNowPlaying();
+    if (!this.props.playing || this.props.playing.length < 1) {
+      return this.renderNotPlaying();
     }
 
     return this.renderNowPlaying(
       <audio autoPlay controls preload="auto" title="iOS test title" style={{width: '100%'}}>
-        <source src={'/' + this.props.queue.pop().location}/>
+        <source src={'/' + this.props.playing.location}/>
       </audio>
     );
   }
@@ -36,7 +50,7 @@ export class NowPlaying extends Component {
 
 function mapStateToProps(state) {
   return {
-    queue: state.queue
+    playing: state.playing
   };
 }
 

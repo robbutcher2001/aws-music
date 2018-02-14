@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import NowPlaying from './now-playing';
-import UpNext from './up-next';
+import Queue from './queue';
 
 export default class LeftSidePanelContainer extends Component {
   render() {
@@ -9,7 +9,7 @@ export default class LeftSidePanelContainer extends Component {
       <div id="header">
         <div className="top">
           <NowPlaying />
-          <UpNext />
+          <Queue />
         </div>
       </div>
     );

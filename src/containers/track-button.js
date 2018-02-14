@@ -12,11 +12,9 @@ export class TrackButton extends Component {
 
   onClick(event) {
     event.preventDefault();
-
     const artistId = this.props.artistId;
     const albumId = this.props.albumId;
-    const trackId = this.props.track.id;
-    this.props.queueTrack(`artist/${artistId}/album/${albumId}/track/${trackId}`);
+    this.props.queueTrack(artistId, albumId, this.props.track);
   }
 
   render() {
