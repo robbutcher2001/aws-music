@@ -36,22 +36,21 @@ export class NowPlaying extends Component {
   }
 
   render() {
-    if (!this.props.location) {
+    if (!this.props.raw) {
       return this.renderNotPlaying();
     }
 
     return this.renderNowPlaying(
       <audio autoPlay controls preload="auto" title={this.props.meta.title} style={{width: '100%'}}>
-        <source src={'/' + this.props.location}/>
+        <source src={'/' + this.props.raw.location}/>
       </audio>
     );
   }
 }
 
 function mapStateToProps(state) {
-  console.log(state.playingMeta);
   return {
-    location: state.playingLocation,
+    raw: state.playingLocation,
     meta: state.playingMeta
   };
 }
