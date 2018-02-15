@@ -24,7 +24,7 @@ export class QueueItem extends Component {
     return (
       <li key={this.props.track.id}>
         <a onClick={this.onClick} className='skel-layers-ignoreHref'>
-          <span className='icon fa-pause'>{this.props.track.title}</span>
+          <span className='icon fa-play'>{this.props.track.title}</span>
         </a>
       </li>
     );
