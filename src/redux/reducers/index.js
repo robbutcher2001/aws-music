@@ -1,12 +1,14 @@
 import { combineReducers } from 'redux';
 import PickerReducer from './reducer-picker';
 import QueueReducer from './reducer-queue';
-import GetTrackReducer from './reducer-get-track';
+import GetTrackLocationReducer from './reducer-get-track-location';
+import GetTrackMetaReducer from './reducer-get-track-meta';
 
 const rootReducer = combineReducers({
   picker: PickerReducer,
   queue: QueueReducer,
-  playing: GetTrackReducer
+  playingLocation: GetTrackLocationReducer,
+  playingMeta: GetTrackMetaReducer
 });
 
 export default rootReducer;

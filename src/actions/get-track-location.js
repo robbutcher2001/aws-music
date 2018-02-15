@@ -1,13 +1,13 @@
-export const GET_TRACK = 'GET_TRACK'; //TODO: move to constants
+export const GET_TRACK_LOCATION = 'GET_TRACK_LOCATION'; //TODO: move to constants
 
-export function getTrack(api) {
+export function getTrackLocation(api) {
   //TODO: move async operation to middleware by using module like axios
   const request = fetch(`${__API_BASE__}/${api}`)
     .then(response => response.json())
     .catch(err => { err });
 
   return {
-    type: GET_TRACK,
+    type: GET_TRACK_LOCATION,
     payload: request
   }
 }

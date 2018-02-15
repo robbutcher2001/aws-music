@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { getTrack } from '../../actions/get-track';
+import { getTrackLocation } from '../../actions/get-track-location';
+import { getTrackMeta } from '../../actions/get-track-meta';
 
 export class QueueItem extends Component {
   constructor(props) {
@@ -15,7 +16,8 @@ export class QueueItem extends Component {
     const artistId = this.props.track.artistId;
     const albumId = this.props.track.albumId;
     const trackId = this.props.track.id;
-    this.props.getTrack(`artist/${artistId}/album/${albumId}/track/${trackId}`);
+    this.props.getTrackLocation(`artist/${artistId}/album/${albumId}/track/${trackId}`);
+    this.props.getTrackMeta(this.props.track);
   }
 
   render() {
@@ -29,4 +31,4 @@ export class QueueItem extends Component {
   }
 }
 
-export default connect(null, { getTrack })(QueueItem);
+export default connect(null, { getTrackLocation, getTrackMeta })(QueueItem);

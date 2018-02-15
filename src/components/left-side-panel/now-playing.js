@@ -11,7 +11,7 @@ export class NowPlaying extends Component {
       <div>
         <div id="logo">
           <span className="image avatar48">
-            <img src="/images/headphones.png" alt="No album art" />
+            <img src="/images/headphones.png" alt="No album art" style={{backgroundColor: '#222629'}}/>
           </span>
           <h1 id="title">Nothing playing</h1>
         </div>
@@ -25,10 +25,10 @@ export class NowPlaying extends Component {
       <div>
         <div id="logo">
           <span className="image avatar48">
-            <img src="/album-art/london-grammar-if-you-wait" alt="London Grammar album art" />
+            <img src={'/' + this.props.meta.albumart} alt={this.props.meta.artist + ' album art'} />
           </span>
           <h1 id="title">Now playing</h1>
-          <p>London Grammar | 2014</p>
+          <p>{this.props.meta.artist + ' | ' + this.props.meta.album}</p>
         </div>
         {extraContent}
       </div>
@@ -36,21 +36,23 @@ export class NowPlaying extends Component {
   }
 
   render() {
-    if (!this.props.playing || this.props.playing.length < 1) {
+    if (!this.props.location) {
       return this.renderNotPlaying();
     }
 
     return this.renderNowPlaying(
       <audio autoPlay controls preload="auto" title="iOS test title" style={{width: '100%'}}>
-        <source src={'/' + this.props.playing.location}/>
+        <source src={'/' + this.props.location}/>
       </audio>
     );
   }
 }
 
 function mapStateToProps(state) {
+  console.log(state.playingMeta);
   return {
-    playing: state.playing
+    location: state.playingLocation,
+    meta: state.playingMeta
   };
 }
 
