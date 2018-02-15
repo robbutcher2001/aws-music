@@ -41,7 +41,7 @@ export class NowPlaying extends Component {
     }
 
     return this.renderNowPlaying(
-      <audio autoPlay controls preload="auto" title="iOS test title" style={{width: '100%'}}>
+      <audio autoPlay controls preload="auto" title={this.props.meta.title} style={{width: '100%'}}>
         <source src={'/' + this.props.location}/>
       </audio>
     );
