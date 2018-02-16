@@ -15,7 +15,7 @@ export class Queue extends Component {
 
     const QueueItems = this.props.queue.map(track => {
       return (
-        <QueueItem key={track.id} track={track} />
+        <QueueItem key={track.id} track={track} active={track.active}/>
       );
     });
 

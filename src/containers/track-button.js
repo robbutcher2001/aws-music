@@ -15,6 +15,7 @@ export class TrackButton extends Component {
     const artistId = this.props.artistId;
     const albumId = this.props.albumId;
     this.props.queueTrack(artistId, albumId, this.props.track);
+    this.props.onTrackSelect(this.props.track);
   }
 
   render() {
