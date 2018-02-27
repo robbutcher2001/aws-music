@@ -6,6 +6,10 @@ export class NowPlaying extends Component {
     super(props);
   }
 
+  onTrackLoaded(event) {
+    console.log(`track loaded ${event}`);
+  }
+
   renderNotPlaying(extraContent) {
     return (
       <div>
@@ -44,8 +48,8 @@ export class NowPlaying extends Component {
       <audio autoPlay controls preload="auto"
         title={`${this.props.meta.artist} | ${this.props.meta.title}`}
         style={{width: '100%'}}
-        src={`/${this.props.raw.location}`}>
-      </audio>
+        src={`/${this.props.raw.location}`}
+        onLoadedData={this.onTrackLoaded} />
     );
   }
 }
