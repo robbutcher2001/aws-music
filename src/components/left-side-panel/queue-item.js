@@ -20,7 +20,7 @@ export class QueueItem extends Component {
     const trackId = this.props.track.id;
     this.props.getTrackLocation(`artist/${artistId}/album/${albumId}/track/${trackId}`);
     this.props.getTrackMeta(this.props.track);
-    this.props.reshuffleQueue(this.props.track);
+    // this.props.reshuffleQueue(this.props.track);
     this.props.makeTrackActive(this.props.track);
   }
 
