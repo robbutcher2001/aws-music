@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 export class NowPlaying extends Component {
   constructor(props) {
     super(props);
+
+    this.onLoadedData = this.onTrackLoaded.bind(this);
   }
 
   onTrackLoaded(event) {
