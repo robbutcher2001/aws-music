@@ -36,7 +36,7 @@ export class QueueItem extends Component {
     }
     else {
       return (
-        <li key={this.props.track.id}>
+        <li key={this.props.track.id} style={{cursor: 'pointer'}}>
           <a onClick={this.onClick} className='skel-layers-ignoreHref'>
             <span>{this.props.track.title}</span>
           </a>
