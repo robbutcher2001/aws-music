@@ -21,42 +21,44 @@ const getLoadedTitle = tracks => {
   return loadedTitle;
 }
 
-const getLoadedHeading = tracks => {
-  let loadedHeading;
-  tracks.forEach(track => {
-    if (typeof loadedHeading === 'undefined') {
-      loadedHeading = track.year;
-    }
-  });
-
-  return loadedHeading;
-}
-
-const TrackButtons = props => {
-  const TrackButtons = props.tracks.map(track => {
-    return (
-      <li key={track.id}>
-        <TrackButton track={track} artistId={props.artistId} albumId={props.albumId} />
-      </li>
-    );
-  });
-
-  return (
-    <ol className="track-list ">
-      {TrackButtons}
-    </ol>
-  );
-}
-
 export class TrackList extends Component {
   constructor(props) {
     super(props);
+
+    this.state = { heading: 'Click tracks to queue' };
   }
 
   componentDidMount() {
     const artistId = this.props.match.params.artistId;
     const albumId = this.props.match.params.albumId;
     this.props.fetchTracks(`artist/${artistId}/album/${albumId}/tracks`);
+  }
+
+  //TODO: this class shouldn't render both title/heading of grid and the track list.
+  // Split the rendering of these into two separate components so you can update the
+  // heading without having to re-render the track list
+  trackSelected(track) {
+    this.setState({ heading: `${track.title} queued` });
+  }
+
+  createTrackButtons() {
+    const TrackButtons = this.props.tracks.map(track => {
+      return (
+        <li key={track.id}>
+          <TrackButton
+            onTrackSelect={selectedTrack => this.trackSelected(selectedTrack)}
+            track={track}
+            artistId={this.props.match.params.artistId}
+            albumId={this.props.match.params.albumId} />
+        </li>
+      );
+    });
+
+    return (
+      <ol className="track-list ">
+        {TrackButtons}
+      </ol>
+    );
   }
 
   render() {
@@ -68,10 +70,9 @@ export class TrackList extends Component {
     const albumId = this.props.match.params.albumId;
 
     let loadedTitle = getLoadedTitle(this.props.tracks);
-    let loadedHeading = getLoadedHeading(this.props.tracks);
-    const trackButtons = <TrackButtons tracks={this.props.tracks} artistId={artistId} albumId={albumId} />
+    const trackButtons = this.createTrackButtons();
 
-    return <Container title={loadedTitle} heading={loadedHeading} rows={trackButtons} />
+    return <Container title={loadedTitle} heading={this.state.heading} rows={trackButtons} />
   }
 }
 

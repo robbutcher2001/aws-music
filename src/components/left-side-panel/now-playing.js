@@ -4,39 +4,76 @@ import { connect } from 'react-redux';
 export class NowPlaying extends Component {
   constructor(props) {
     super(props);
+
+    this.state = { loading: false };
+
+    this.trackLoading = this.trackLoading.bind(this);
+    this.trackLoaded = this.trackLoaded.bind(this);
   }
 
-  renderNowPlaying(extraContent) {
+  trackLoading(event) {
+    event.preventDefault();
+
+    this.setState({ loading: true });
+  }
+
+  trackLoaded(event) {
+    event.preventDefault();
+
+    this.setState({ loading: false });
+  }
+
+  renderNotPlaying() {
     return (
       <div>
         <div id="logo">
           <span className="image avatar48">
-            <img src="/album-art/london-grammar-if-you-wait" alt="London Grammar album art" />
+            <img src="/images/headphones.png" alt="No album art" style={{backgroundColor: '#222629'}}/>
           </span>
-          <h1 id="title">Now playing</h1>
-          <p>London Grammar | 2014</p>
+          <h1 id="title">Nothing playing</h1>
         </div>
-        {extraContent}
+      </div>
+    );
+  }
+
+  renderWithStatus(title) {
+    return (
+      <div>
+        <div id="logo">
+          <span className="image avatar48">
+            <img src={`/${this.props.meta.albumart}`} alt={`${this.props.meta.artist} album art`} />
+          </span>
+          <h1 id="title">{title}</h1>
+          <p>{`${this.props.meta.artist} | ${this.props.meta.album}`}</p>
+        </div>
+        <audio autoPlay controls preload="auto"
+          title={`${this.props.meta.artist} | ${this.props.meta.title}`}
+          style={{width: '100%'}}
+          src={`/${this.props.raw.location}`}
+          onLoadStart={this.trackLoading}
+          onCanPlay={this.trackLoaded}
+        />
       </div>
     );
   }
 
   render() {
-    if (!this.props.queue || this.props.queue.length < 1) {
-      return this.renderNowPlaying();
+    if (!this.props.raw) {
+      return this.renderNotPlaying();
     }
 
-    return this.renderNowPlaying(
-      <audio autoPlay controls preload="auto" title="iOS test title" style={{width: '100%'}}>
-        <source src={'/' + this.props.queue.pop().location}/>
-      </audio>
-    );
+    if (this.state.loading) {
+      return this.renderWithStatus('Buffering..');
+    }
+
+    return this.renderWithStatus('Now playing');
   }
 }
 
 function mapStateToProps(state) {
   return {
-    queue: state.queue
+    raw: state.playingLocation,
+    meta: state.playingMeta
   };
 }
 
