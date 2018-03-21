@@ -5,7 +5,7 @@ export class NowPlaying extends Component {
   constructor(props) {
     super(props);
 
-    this.onLoadedData = this.onTrackLoaded.bind(this);
+    this.onTrackLoaded = this.onTrackLoaded.bind(this);
   }
 
   onTrackLoaded(event) {
