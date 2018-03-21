@@ -5,14 +5,27 @@ export class NowPlaying extends Component {
   constructor(props) {
     super(props);
 
-    this.onTrackLoaded = this.onTrackLoaded.bind(this);
+    this.state = { loading: false };
+
+    this.trackLoading = this.trackLoading.bind(this);
+    this.trackLoaded = this.trackLoaded.bind(this);
   }
 
-  onTrackLoaded(event) {
-    console.log(`track loaded ${event}`);
+  trackLoading(event) {
+    event.preventDefault();
+
+    this.setState({ loading: true });
+    console.log(`track loading`);
   }
 
-  renderNotPlaying(extraContent) {
+  trackLoaded(event) {
+    event.preventDefault();
+
+    this.setState({ loading: false });
+    console.log(`track loaded`);
+  }
+
+  renderNotPlaying() {
     return (
       <div>
         <div id="logo">
@@ -21,19 +34,18 @@ export class NowPlaying extends Component {
           </span>
           <h1 id="title">Nothing playing</h1>
         </div>
-        {extraContent}
       </div>
     );
   }
 
-  renderNowPlaying(extraContent) {
+  renderWithStatus(title, extraContent) {
     return (
       <div>
         <div id="logo">
           <span className="image avatar48">
             <img src={`/${this.props.meta.albumart}`} alt={`${this.props.meta.artist} album art`} />
           </span>
-          <h1 id="title">Now playing</h1>
+          <h1 id="title">{title}</h1>
           <p>{`${this.props.meta.artist} | ${this.props.meta.album}`}</p>
         </div>
         {extraContent}
@@ -46,12 +58,19 @@ export class NowPlaying extends Component {
       return this.renderNotPlaying();
     }
 
-    return this.renderNowPlaying(
+    if (this.state.loading) {
+      return this.renderWithStatus('Buffering..');
+    }
+
+    return this.renderWithStatus(
+      'Now playing',
       <audio autoPlay controls preload="auto"
         title={`${this.props.meta.artist} | ${this.props.meta.title}`}
         style={{width: '100%'}}
         src={`/${this.props.raw.location}`}
-        onLoadedData={this.onTrackLoaded} />
+        onLoadStart={this.trackLoading}
+        onCanPlay={this.trackLoaded}
+      />
     );
   }
 }
