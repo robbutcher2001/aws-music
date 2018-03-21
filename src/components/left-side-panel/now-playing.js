@@ -15,14 +15,12 @@ export class NowPlaying extends Component {
     event.preventDefault();
 
     this.setState({ loading: true });
-    console.log(`track loading`);
   }
 
   trackLoaded(event) {
     event.preventDefault();
 
     this.setState({ loading: false });
-    console.log(`track loaded`);
   }
 
   renderNotPlaying() {

@@ -5,7 +5,12 @@ import { MAKE_TRACK_ACTIVE } from '../../actions/make-track-active';
 export default function(state = [], action) {
   switch (action.type) {
     case QUEUE_TRACK:
-      return [ action.payload, ...state ];
+      if (state.map(track => track.id).includes(action.payload.id)) {
+        return state;
+      }
+      else {
+        return [ ...state, action.payload ];
+      }
     case RESHUFFLE_QUEUE:
       action.payload.active = true;
       return [ action.payload ].concat(state.filter(track => track.id !== action.payload.id));
