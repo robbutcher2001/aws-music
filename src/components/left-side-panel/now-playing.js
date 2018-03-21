@@ -38,7 +38,7 @@ export class NowPlaying extends Component {
     );
   }
 
-  renderWithStatus(title, extraContent) {
+  renderWithStatus(title) {
     return (
       <div>
         <div id="logo">
@@ -48,7 +48,13 @@ export class NowPlaying extends Component {
           <h1 id="title">{title}</h1>
           <p>{`${this.props.meta.artist} | ${this.props.meta.album}`}</p>
         </div>
-        {extraContent}
+        <audio autoPlay controls preload="auto"
+          title={`${this.props.meta.artist} | ${this.props.meta.title}`}
+          style={{width: '100%'}}
+          src={`/${this.props.raw.location}`}
+          onLoadStart={this.trackLoading}
+          onCanPlay={this.trackLoaded}
+        />
       </div>
     );
   }
@@ -62,16 +68,7 @@ export class NowPlaying extends Component {
       return this.renderWithStatus('Buffering..');
     }
 
-    return this.renderWithStatus(
-      'Now playing',
-      <audio autoPlay controls preload="auto"
-        title={`${this.props.meta.artist} | ${this.props.meta.title}`}
-        style={{width: '100%'}}
-        src={`/${this.props.raw.location}`}
-        onLoadStart={this.trackLoading}
-        onCanPlay={this.trackLoaded}
-      />
-    );
+    return this.renderWithStatus('Now playing');
   }
 }
 
