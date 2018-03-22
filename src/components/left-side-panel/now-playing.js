@@ -41,7 +41,7 @@ export class NowPlaying extends Component {
       <div>
         <div id="logo">
           <span className="image avatar48">
-            <img src={`/${this.props.meta.albumart}`} alt={`${this.props.meta.artist} album art`} />
+            <img src={this.props.meta.albumart !== '-' ? `/${this.props.meta.albumart}` : '/images/headphones.png'} alt={`${this.props.meta.artist} album art`} />
           </span>
           <h1 id="title">{title}</h1>
           <p>{`${this.props.meta.artist} | ${this.props.meta.album}`}</p>
