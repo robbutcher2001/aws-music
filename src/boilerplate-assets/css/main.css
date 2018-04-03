@@ -1551,7 +1551,7 @@
 /* Basic */
 
 	body {
-		background: #fff;
+		background: #f5fafa;
 		font-family: 'Source Sans Pro', sans-serif;
 		font-size: 19pt;
 		font-weight: 300;
@@ -2153,8 +2153,6 @@
 			padding: 4em 0;
 			box-shadow: inset 0 1px 0 0 rgba(0, 0, 0, 0.05), inset 0 0.1em 0.1em 0 rgba(0, 0, 0, 0.025);
 			text-align: center;
-			background-image: url("images/overlay.png");
-			padding-bottom: 100%;
 		}
 
 			#main > section.dark {
@@ -2241,7 +2239,6 @@
 
 			#main > section {
 				padding: 3em 0;
-				padding-bottom: 100%;
 			}
 
 			#main section.cover {
@@ -2500,7 +2497,6 @@
 
 				#main > section {
 					padding: 3em 0;
-					padding-bottom: 100%;
 				}
 
 				#main section.cover {
@@ -2540,7 +2536,6 @@
 
 			#main > section {
 				padding: 2em 0;
-				padding-bottom: 100%;
 			}
 
 			#main section.cover {
