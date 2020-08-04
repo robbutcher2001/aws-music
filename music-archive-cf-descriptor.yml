@@ -385,7 +385,7 @@ Resources:
       FunctionName:
         Fn::Join: [ '-', [ 'MusicArchive', 'StaticS3DeployerFunction', !Ref Env ] ]
       Handler: lambda/deployment/static-s3-deployer.handler
-      Runtime: nodejs6.10
+      Runtime: nodejs10.x
       Code:
         S3Bucket: 'music-archive-source-code'
         S3Key: %{SourceCodeBucket}
@@ -400,7 +400,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Handler: lambda/services/model/tag-reader.handler
-      Runtime: nodejs6.10
+      Runtime: nodejs10.x
       Code:
         S3Bucket: 'music-archive-source-code'
         S3Key: %{SourceCodeBucket}
@@ -431,7 +431,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Handler: lambda/services/model/db-model-builder.handler
-      Runtime: nodejs6.10
+      Runtime: nodejs10.x
       Code:
         S3Bucket: 'music-archive-source-code'
         S3Key: %{SourceCodeBucket}
@@ -450,7 +450,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Handler: lambda/api/list-artists.handler
-      Runtime: nodejs6.10
+      Runtime: nodejs10.x
       Code:
         S3Bucket: 'music-archive-source-code'
         S3Key: %{SourceCodeBucket}
@@ -477,7 +477,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Handler: lambda/api/get-artist-albums.handler
-      Runtime: nodejs6.10
+      Runtime: nodejs10.x
       Code:
         S3Bucket: 'music-archive-source-code'
         S3Key: %{SourceCodeBucket}
@@ -504,7 +504,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Handler: lambda/api/get-album-tracks.handler
-      Runtime: nodejs6.10
+      Runtime: nodejs10.x
       Code:
         S3Bucket: 'music-archive-source-code'
         S3Key: %{SourceCodeBucket}
@@ -531,7 +531,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Handler: lambda/api/serve-track.handler
-      Runtime: nodejs6.10
+      Runtime: nodejs10.x
       Code:
         S3Bucket: 'music-archive-source-code'
         S3Key: %{SourceCodeBucket}
