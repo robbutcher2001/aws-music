@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const htmlWebpack = require('html-webpack-plugin');
+const faviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const baseConfig = {
   entry: [
@@ -28,6 +29,11 @@ const baseConfig = {
     new htmlWebpack({
       template: path.join(path.resolve(__dirname, '../src'), 'index.html'),
     }),
+    new faviconsWebpackPlugin({
+      logo: path.resolve(__dirname, '../src/images/headphones.png'),
+      title: 'Butcher | Music',
+      persistentCache: false
+    })
   ],
   devServer: {
     historyApiFallback: true,
